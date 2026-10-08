@@ -1,5 +1,5 @@
 """
-TOTP — RFC 6238 (SHA-1, 8 digits, 30s period, verify window ±1).
+TOTP — RFC 6238 (SHA-1, 6 digits, 30s period, verify window ±1).
 
 Secret storage: system keyring via `keyring`; on platforms without a
 backend (e.g. headless Linux) falls back to a 0600 file with a warning.
