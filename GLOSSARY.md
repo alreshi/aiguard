@@ -4,6 +4,9 @@ AIGuard is a guardrail for AI coding assistants: it evaluates the shell commands
 
 ## Language
 
+**Execution-Layer Security (ELS)**:
+The discipline of securing the layer where an AI agent's decisions become real actions — process and Command execution on the host — as opposed to model-level or prompt-level defenses. AIGuard is an ELS tool: it gates execution regardless of how the Command was generated.
+
 **Assistant**:
 A supported AI coding CLI that AIGuard integrates with (Kimi Code CLI, Claude Code).
 _Avoid_: agent, AI tool, LLM
