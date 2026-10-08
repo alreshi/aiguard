@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contributing — AIGuard docs</title>
+<meta name="description" content="Contribute to AIGuard: development setup with Python 3.11, the hermetic pytest suite, and the design-record workflow.">
+<link rel="canonical" href="https://alreshi.github.io/aiguard/docs/contributing.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AIGuard — Contributing">
+<meta property="og:description" content="Development setup and contribution workflow.">
+<meta property="og:url" content="https://alreshi.github.io/aiguard/docs/contributing.html">
+<!-- TODO(design): replace with og-image.png (1200x630) before launch -->
+<meta property="og:image" content="https://alreshi.github.io/aiguard/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://alreshi.github.io/aiguard/assets/og-image.png">
+<meta name="theme-color" content="#0c1116">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<script>
+(function(){try{var t=localStorage.getItem("aiguard-theme");if(!t){t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";}document.documentElement.dataset.theme=t;}catch(e){}})();
+</script>
+<link rel="stylesheet" href="../css/site.css">
+<script src="../js/main.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="beta-banner" role="status">
+  <strong>Beta</strong> — for evaluation and testing only. AIGuard is a guardrail, not a security boundary.
+  <a href="risk-disclosures.html">Read the risk disclosures</a>
+</div>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html" aria-label="AIGuard home">
+      <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2.5 27.5 6.4v7.8c0 7.7-5.2 12.9-11.5 15.3C9.7 27.1 4.5 21.9 4.5 14.2V6.4Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M11 12.5l4 3.7-4 3.7M17.5 20h5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      AIGuard
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="index.html" aria-current="page">Docs</a>
+      <a href="../security.html">Security</a>
+      <a href="https://github.com/alreshi/aiguard">GitHub</a>
+      <button class="theme-toggle" type="button" aria-label="Switch theme">
+        <svg class="icon-sun" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6 13 13M13 3l-1.4 1.4M4.4 11.6 3 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <svg class="icon-moon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" hidden><path d="M13.5 9.5A6 6 0 0 1 6.5 2.5a6 6 0 1 0 7 7Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap docs-layout">
+  <button class="sidebar-toggle" type="button" aria-expanded="false" aria-controls="docs-nav">Documentation menu</button>
+  <aside class="docs-sidebar">
+    <nav id="docs-nav" aria-label="Documentation">
+      <p class="nav-group">Get started</p>
+      <a href="index.html">Overview</a>
+      <a href="installation.html">Installation</a>
+      <p class="nav-group">Reference</p>
+      <a href="architecture.html">Architecture</a>
+      <a href="releases.html">Releases</a>
+      <a href="risk-disclosures.html">Risk Disclosures</a>
+      <p class="nav-group">Project</p>
+      <a href="security.html">Security</a>
+      <a href="contributing.html" aria-current="page">Contributing</a>
+    </nav>
+  </aside>
+
+  <article class="docs-content" id="main">
+    <h1>Contributing</h1>
+    <p class="page-desc">Development setup and workflow. The authoritative
+    guide is the repository's
+    <a href="https://github.com/alreshi/aiguard/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>.</p>
+
+    <h2 id="setup">Development setup</h2>
+    <div class="codeblock">
+      <button class="copy" type="button">copy</button>
+      <pre>python3.11 -m venv .venv &amp;&amp; source .venv/bin/activate
+pip install -e '.[dev]'
+pytest</pre>
+    </div>
+    <p>The test suite is hermetic: it runs against an isolated
+    <code>HOME</code> and never touches your real <code>~/.aiguard/</code>.</p>
+
+    <h2 id="workflow">Workflow</h2>
+    <ul>
+      <li>Keep changes small and covered by tests; run
+        <code>pytest</code> before opening a pull request.</li>
+      <li>Use the domain vocabulary from <code>GLOSSARY.md</code> —
+        <em>Decision</em>, <em>Action</em>, <em>Challenge</em>,
+        <em>Approval</em>, <em>Guardrail</em> — in code, docs, and commit
+        messages.</li>
+      <li>Record significant design decisions as ADRs in
+        <code>docs/adr/</code>.</li>
+      <li>Update <code>CHANGELOG.md</code> under <em>Unreleased</em>.</li>
+    </ul>
+
+    <div class="admonition warning">
+      <p class="admonition-title">Security-sensitive changes</p>
+      <p>Changes to the policy engine, approval flow, TOTP, or file
+      permissions are security-sensitive. If you believe you have found a
+      vulnerability, do <strong>not</strong> open a public issue — report it
+      privately per the <a href="../security.html#reporting">security
+      policy</a>.</p>
+    </div>
+
+    <h2 id="license">License</h2>
+    <p>AIGuard is licensed under
+    <a href="https://github.com/alreshi/aiguard/blob/main/LICENSE">Apache-2.0</a>.
+    By contributing, you agree your contributions are licensed under the same
+    terms.</p>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <span><strong>AIGuard</strong> — Execution-Layer Security for AI agents</span>
+      <ul class="footer-links">
+        <li><a href="https://github.com/alreshi/aiguard">GitHub</a></li>
+        <li><a href="https://github.com/alreshi/aiguard/blob/main/LICENSE">Apache-2.0</a></li>
+        <li><a href="https://pypi.org/project/aiguard-gate/">PyPI</a></li>
+        <li><a href="../security.html">Security policy</a></li>
+        <li><a href="index.html">Docs</a></li>
+      </ul>
+    </div>
+    <p class="footer-note">Beta software, provided “as is”, without warranty of any
+    kind. AIGuard is a defense-in-depth guardrail, not a security boundary. You are
+    responsible for reviewing every command you approve.</p>
+  </div>
+</footer>
+
+</body>
+</html>

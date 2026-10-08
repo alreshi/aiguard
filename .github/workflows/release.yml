@@ -6,7 +6,7 @@ name: Release
 #   - manual (Actions tab)   → publish to TestPyPI (rehearsal) or PyPI
 #
 # One-time setup required on PyPI/TestPyPI: register this workflow as a
-# trusted publisher (PyPI project: aiguard-box, repo: alreshi/aiguard,
+# trusted publisher (PyPI project: aiguard-gate, repo: alreshi/aiguard,
 # workflow: release.yml). See docs/releases.md.
 
 on:

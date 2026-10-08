@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Releases — AIGuard docs</title>
+<meta name="description" content="AIGuard versioning (SemVer with PEP 440 pre-releases), release process, and support policy during the Beta.">
+<link rel="canonical" href="https://alreshi.github.io/aiguard/docs/releases.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AIGuard — Releases">
+<meta property="og:description" content="Versioning, release process, and support policy.">
+<meta property="og:url" content="https://alreshi.github.io/aiguard/docs/releases.html">
+<!-- TODO(design): replace with og-image.png (1200x630) before launch -->
+<meta property="og:image" content="https://alreshi.github.io/aiguard/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://alreshi.github.io/aiguard/assets/og-image.png">
+<meta name="theme-color" content="#0c1116">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<script>
+(function(){try{var t=localStorage.getItem("aiguard-theme");if(!t){t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";}document.documentElement.dataset.theme=t;}catch(e){}})();
+</script>
+<link rel="stylesheet" href="../css/site.css">
+<script src="../js/main.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="beta-banner" role="status">
+  <strong>Beta</strong> — for evaluation and testing only. AIGuard is a guardrail, not a security boundary.
+  <a href="risk-disclosures.html">Read the risk disclosures</a>
+</div>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html" aria-label="AIGuard home">
+      <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2.5 27.5 6.4v7.8c0 7.7-5.2 12.9-11.5 15.3C9.7 27.1 4.5 21.9 4.5 14.2V6.4Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M11 12.5l4 3.7-4 3.7M17.5 20h5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      AIGuard
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="index.html" aria-current="page">Docs</a>
+      <a href="../security.html">Security</a>
+      <a href="https://github.com/alreshi/aiguard">GitHub</a>
+      <button class="theme-toggle" type="button" aria-label="Switch theme">
+        <svg class="icon-sun" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6 13 13M13 3l-1.4 1.4M4.4 11.6 3 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <svg class="icon-moon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" hidden><path d="M13.5 9.5A6 6 0 0 1 6.5 2.5a6 6 0 1 0 7 7Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap docs-layout">
+  <button class="sidebar-toggle" type="button" aria-expanded="false" aria-controls="docs-nav">Documentation menu</button>
+  <aside class="docs-sidebar">
+    <nav id="docs-nav" aria-label="Documentation">
+      <p class="nav-group">Get started</p>
+      <a href="index.html">Overview</a>
+      <a href="installation.html">Installation</a>
+      <p class="nav-group">Reference</p>
+      <a href="architecture.html">Architecture</a>
+      <a href="releases.html" aria-current="page">Releases</a>
+      <a href="risk-disclosures.html">Risk Disclosures</a>
+      <p class="nav-group">Project</p>
+      <a href="security.html">Security</a>
+      <a href="contributing.html">Contributing</a>
+    </nav>
+  </aside>
+
+  <article class="docs-content" id="main">
+    <h1>Releases</h1>
+    <p class="page-desc">Versioning, release process, and support policy.</p>
+
+    <div class="admonition warning">
+      <p class="admonition-title">Status: private Beta</p>
+      <p>The current release line is <strong>Beta</strong>. All builds are
+      evaluation builds; no public release happens without the maintainer's
+      explicit approval.</p>
+    </div>
+
+    <h2 id="versioning">Versioning</h2>
+    <p>AIGuard follows <a href="https://semver.org/">Semantic Versioning</a>
+    with <a href="https://peps.python.org/pep-0440/">PEP&nbsp;440</a>
+    pre-release identifiers:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Bump</th><th>When</th></tr></thead>
+        <tbody>
+          <tr><td><strong>MAJOR</strong></td>
+              <td>Incompatible changes to the policy Decision contract, hook
+              protocol, state file formats, or CLI</td></tr>
+          <tr><td><strong>MINOR</strong></td>
+              <td>Backward-compatible features — new policy rules, new
+              assistant integrations, new CLI commands</td></tr>
+          <tr><td><strong>PATCH</strong></td>
+              <td>Backward-compatible fixes, especially security fixes</td></tr>
+          <tr><td><strong>Pre-release</strong></td>
+              <td><code>aN</code> / <code>bN</code> / <code>rcN</code>
+              suffixes, e.g. <code>6.1.0b1</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="automation">Release automation</h2>
+    <p>Releases are built and published by a GitHub Actions workflow using
+    PyPI <strong>Trusted Publishing</strong> (OIDC) — no API tokens are stored
+    anywhere. The workflow runs the test suite, builds the sdist and wheel,
+    then publishes:</p>
+    <ul>
+      <li>Push a tag <code>vX.Y.Z</code> → publish to PyPI and create a GitHub
+        Release (marked pre-release automatically for
+        <code>a</code>/<code>b</code>/<code>rc</code> versions).</li>
+      <li>Manual run → publish to TestPyPI for a rehearsal.</li>
+    </ul>
+
+    <h2 id="support">Support policy</h2>
+    <p>During Beta, <strong>only the latest pre-release is supported</strong>.
+    After the first stable release, the latest <code>MAJOR.MINOR</code> line
+    receives fixes; older lines do not.</p>
+
+    <h2 id="deprecations">Deprecations</h2>
+    <div class="admonition note">
+      <p class="admonition-title">During Beta, expect breakage</p>
+      <p>Policy rules, state file formats, and CLI behavior may change between
+      pre-releases without a deprecation period. After stable, behavior
+      removals are announced in the changelog and, where possible, with a
+      runtime warning for at least one minor release before taking effect.</p>
+    </div>
+    <p>Release history lives in the repository's
+    <a href="https://github.com/alreshi/aiguard/blob/main/CHANGELOG.md">CHANGELOG.md</a>.</p>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <span><strong>AIGuard</strong> — Execution-Layer Security for AI agents</span>
+      <ul class="footer-links">
+        <li><a href="https://github.com/alreshi/aiguard">GitHub</a></li>
+        <li><a href="https://github.com/alreshi/aiguard/blob/main/LICENSE">Apache-2.0</a></li>
+        <li><a href="https://pypi.org/project/aiguard-gate/">PyPI</a></li>
+        <li><a href="../security.html">Security policy</a></li>
+        <li><a href="index.html">Docs</a></li>
+      </ul>
+    </div>
+    <p class="footer-note">Beta software, provided “as is”, without warranty of any
+    kind. AIGuard is a defense-in-depth guardrail, not a security boundary. You are
+    responsible for reviewing every command you approve.</p>
+  </div>
+</footer>
+
+</body>
+</html>

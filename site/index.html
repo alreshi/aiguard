@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AIGuard — Execution-Layer Security for AI agents</title>
+<meta name="description" content="AIGuard hooks into AI coding assistants (Kimi Code CLI, Claude Code) via PreToolUse hooks and evaluates every shell command against a policy: allow, ask, or block — with out-of-band Touch ID / TOTP approval. Open source, Apache-2.0.">
+<link rel="canonical" href="https://alreshi.github.io/aiguard/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="AIGuard — Execution-Layer Security for AI agents">
+<meta property="og:description" content="A guardrail between your AI assistant and your shell. allow / ask / block, with out-of-band Touch ID / TOTP approval. Open source (Apache-2.0).">
+<meta property="og:url" content="https://alreshi.github.io/aiguard/">
+<!-- TODO(design): replace with og-image.png (1200x630) before launch; see assets/og-image.svg -->
+<meta property="og:image" content="https://alreshi.github.io/aiguard/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AIGuard — Execution-Layer Security for AI agents">
+<meta name="twitter:description" content="A guardrail between your AI assistant and your shell. allow / ask / block, with out-of-band approval.">
+<meta name="twitter:image" content="https://alreshi.github.io/aiguard/assets/og-image.png">
+<meta name="theme-color" content="#0c1116">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<script>
+/* Set theme before first paint to avoid flash. Stored choice > system > dark. */
+(function(){try{var t=localStorage.getItem("aiguard-theme");if(!t){t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";}document.documentElement.dataset.theme=t;}catch(e){}})();
+</script>
+<link rel="stylesheet" href="css/site.css">
+<script src="js/main.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="beta-banner" role="status">
+  <strong>Beta</strong> — for evaluation and testing only. AIGuard is a guardrail, not a security boundary.
+  <a href="docs/risk-disclosures.html">Read the risk disclosures</a>
+</div>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="AIGuard home">
+      <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2.5 27.5 6.4v7.8c0 7.7-5.2 12.9-11.5 15.3C9.7 27.1 4.5 21.9 4.5 14.2V6.4Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M11 12.5l4 3.7-4 3.7M17.5 20h5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      AIGuard
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="docs/index.html">Docs</a>
+      <a href="security.html">Security</a>
+      <a href="https://github.com/alreshi/aiguard">GitHub</a>
+      <button class="theme-toggle" type="button" aria-label="Switch theme">
+        <svg class="icon-sun" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6 13 13M13 3l-1.4 1.4M4.4 11.6 3 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <svg class="icon-moon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" hidden><path d="M13.5 9.5A6 6 0 0 1 6.5 2.5a6 6 0 1 0 7 7Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ============ Hero ============ -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow">Execution-Layer Security for AI agents</p>
+        <h1>A guardrail between your AI assistant and your shell.</h1>
+        <p class="lede">AIGuard hooks into Kimi Code CLI and Claude Code via their
+        PreToolUse hooks and evaluates every shell command against a policy —
+        <strong>allow</strong>, <strong>ask</strong>, or <strong>block</strong>.
+        Dangerous commands wait for an out-of-band approval that only you can give:
+        Touch&nbsp;ID on macOS, TOTP elsewhere.</p>
+        <div class="hero-ctas">
+          <a class="btn btn-primary" href="#install">Install with pipx</a>
+          <a class="btn btn-ghost" href="docs/index.html">Read the docs</a>
+        </div>
+        <ul class="hero-facts">
+          <li>Python 3.11+</li>
+          <li>macOS &amp; Linux</li>
+          <li>Apache-2.0</li>
+          <li><code>pipx install aiguard-gate</code></li>
+        </ul>
+      </div>
+
+      <div>
+        <!-- Terminal demo: real HTML text, selectable. Transcript is illustrative. -->
+        <div class="terminal" data-terminal>
+          <div class="terminal-bar">
+            <span class="terminal-title">zsh — demo (illustrative)</span>
+            <button class="terminal-replay" type="button">replay</button>
+          </div>
+          <div class="terminal-body">
+            <div class="tl tl-cmd" data-type="cmd" data-text='kimi "clean up the build directory"'>kimi "clean up the build directory"</div>
+            <div class="tl tl-gap">&nbsp;</div>
+            <div class="tl tl-dim">› Bash(ls build/)</div>
+            <div class="tl tl-allow">  └ aiguard: allow · risk low — runs instantly</div>
+            <div class="tl tl-gap">&nbsp;</div>
+            <div class="tl tl-dim" data-pause="700">› Bash(rm -rf build/)</div>
+            <div class="tl tl-ask">  └ aiguard: ask · risk high — command blocked</div>
+            <div class="tl tl-ask">    AIGUARD_CHALLENGE:9f3ac1d72e4b</div>
+            <div class="tl tl-note">    approve out-of-band, in any terminal:</div>
+            <div class="tl tl-gap">&nbsp;</div>
+            <div class="tl tl-cmd" data-type="cmd" data-text="aiguard approve 9f3ac1d72e4b">aiguard approve 9f3ac1d72e4b</div>
+            <div class="tl tl-allow" data-pause="900">Touch ID ✓ approved: rm -rf build/</div>
+            <div class="tl tl-note">single-use · bound to the exact command · expires in 5:00</div>
+            <div class="tl tl-gap">&nbsp;</div>
+            <div class="tl tl-dim">› retry: Bash(rm -rf build/)</div>
+            <div class="tl tl-allow">  └ approval consumed — command runs</div>
+            <div class="tl tl-gap">&nbsp;</div>
+            <div class="tl tl-dim" data-pause="700">› Bash(sudo rm -rf /)</div>
+            <div class="tl tl-block">  └ aiguard: block · risk critical</div>
+            <div class="tl tl-block">    Absolute Block — no approval, no override</div>
+          </div>
+        </div>
+        <div class="terminal-legend">
+          <span><i class="dot dot-allow"></i>allow — proceeds</span>
+          <span><i class="dot dot-ask"></i>ask — needs your approval</span>
+          <span><i class="dot dot-block"></i>block — refused, no override</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ How it works ============ -->
+  <section class="section-tight" id="how-it-works">
+    <div class="wrap">
+      <p class="eyebrow">How it works</p>
+      <h2>Four steps between intent and execution</h2>
+      <div class="grid grid-4">
+        <div class="card step">
+          <span class="step-num">1</span>
+          <h3>Hook intercepts</h3>
+          <p>Before the assistant runs a shell command, its official PreToolUse
+          hook pipes the command to <code>aiguard-evaluate</code>.</p>
+        </div>
+        <div class="card step">
+          <span class="step-num">2</span>
+          <h3>Policy decides</h3>
+          <p>Every command gets a Decision — an action
+          (<code>allow</code> / <code>ask</code> / <code>block</code>), a risk
+          tier, and a plain-English warning.</p>
+        </div>
+        <div class="card step">
+          <span class="step-num">3</span>
+          <h3>You approve out-of-band</h3>
+          <p><code>ask</code> commands return
+          <code>AIGUARD_CHALLENGE:&lt;token&gt;</code>. You run
+          <code>aiguard approve</code> in any terminal — Touch&nbsp;ID on
+          macOS, 6-digit TOTP elsewhere.</p>
+        </div>
+        <div class="card step">
+          <span class="step-num">4</span>
+          <h3>Assistant retries</h3>
+          <p>The approval is single-use, bound to the exact command string,
+          and expires after 5 minutes. Retry, and the command runs.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Decisions ============ -->
+  <section class="section-tight">
+    <div class="wrap">
+      <h2>Three possible outcomes for every command</h2>
+      <div class="grid grid-3">
+        <div class="card decision-card allow">
+          <h3><span class="badge badge-allow">allow</span></h3>
+          <p>Safe commands — <code>git status</code>, <code>ls</code> — proceed
+          instantly. No friction for everyday work.</p>
+        </div>
+        <div class="card decision-card ask">
+          <h3><span class="badge badge-ask">ask</span></h3>
+          <p>Everything else is blocked with a challenge token until you approve
+          it out-of-band. <code>ask</code> is the default for unrecognized
+          commands — treat it as the normal case, not an alarm.</p>
+        </div>
+        <div class="card decision-card block">
+          <h3><span class="badge badge-block">block</span></h3>
+          <p>Catastrophic commands — <code>rm -rf /</code>, writes to
+          <code>~/.aiguard/</code> — are refused. <strong>No override
+          exists</strong>: not by approval, not by user policy.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Features ============ -->
+  <section class="section-tight" id="features">
+    <div class="wrap">
+      <p class="eyebrow">Features</p>
+      <h2>What the guardrail gives you</h2>
+      <div class="grid grid-3">
+        <div class="card">
+          <h3>Policy engine</h3>
+          <p>Built-in block → ask → allow rules, first match wins. Extend with
+          your own patterns in <code>~/.aiguard/policy.toml</code> — user
+          <code>allow</code> rules can never override an Absolute Block.</p>
+        </div>
+        <div class="card">
+          <h3>Out-of-band approval</h3>
+          <p>Approvals happen in a separate terminal, outside the assistant's
+          session. The assistant relays a token; it never sees your Touch&nbsp;ID
+          or TOTP.</p>
+        </div>
+        <div class="card">
+          <h3>Platform-native auth</h3>
+          <p>Touch&nbsp;ID via LocalAuthentication on macOS. RFC&nbsp;6238
+          TOTP with any authenticator app on Linux (and as a macOS fallback).</p>
+        </div>
+        <div class="card">
+          <h3>Absolute Blocks</h3>
+          <p>Filesystem-destroying commands and writes to AIGuard's own state
+          are refused outright. No approval and no policy can override them.</p>
+        </div>
+        <div class="card">
+          <h3>Verbatim audit log</h3>
+          <p>Every evaluated command and its Decision is appended to
+          <code>~/.aiguard/audit.jsonl</code> (0600) — a complete record of
+          what the assistant tried to run.</p>
+        </div>
+        <div class="card">
+          <h3>Local by design</h3>
+          <p>No account, no cloud service, no telemetry. All state lives in
+          <code>~/.aiguard/</code> (0700) on your machine.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Limits ============ -->
+  <section class="section limits" id="limits">
+    <div class="wrap">
+      <p class="eyebrow">Honesty section</p>
+      <h2>What AIGuard does NOT do</h2>
+      <p class="muted">AIGuard is a guardrail, not a sandbox. It reduces the
+      chance that an honest-but-fallible assistant runs a dangerous command —
+      it does not make agents safe, and it is not a security boundary.</p>
+      <ul class="limits-list">
+        <li>
+          <strong>Not a sandbox</strong>
+          <p>No filesystem, network, or memory isolation. An approved (or
+          ungated) command runs with your full privileges.</p>
+        </li>
+        <li>
+          <strong>Not adversarial-proof</strong>
+          <p>The threat model is the honest-but-fallible agent. A deliberately
+          evasive or prompt-injected assistant that crafts obfuscated commands
+          is out of scope and may bypass the regex-based policy.</p>
+        </li>
+        <li>
+          <strong>Commands only</strong>
+          <p>File writes and network access performed without spawning a shell
+          command are not gated.</p>
+        </li>
+        <li>
+          <strong>Host platforms fail open</strong>
+          <p>Per Kimi and Claude documentation, a hook that times out or
+          crashes allows the command (AIGuard itself always fails closed).
+          Do not rely on AIGuard in yolo/auto-approve assistant modes, and do
+          not use it as your only safeguard.</p>
+        </li>
+        <li>
+          <strong>The audit log records commands verbatim</strong>
+          <p><code>~/.aiguard/audit.jsonl</code> may contain secrets passed as
+          CLI arguments. It is 0600 — keep it that way.</p>
+        </li>
+      </ul>
+      <p style="margin-top: var(--sp-4);">
+        <a class="btn btn-ghost" href="security.html">Full threat model &amp; security policy</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ Install ============ -->
+  <section class="section" id="install">
+    <div class="wrap">
+      <p class="eyebrow">Install</p>
+      <h2>Up and running in three commands</h2>
+      <div class="install-grid">
+        <div>
+          <h3>1 · Install the CLI</h3>
+          <div class="codeblock">
+            <button class="copy" type="button">copy</button>
+            <pre>pipx install aiguard-gate
+
+<span class="c"># macOS Touch ID support:</span>
+pipx inject aiguard-gate pyobjc-framework-LocalAuthentication</pre>
+          </div>
+          <h3>2 · Enroll &amp; hook your assistant</h3>
+          <div class="codeblock">
+            <button class="copy" type="button">copy</button>
+            <pre>aiguard setup            <span class="c"># TOTP enrollment (required on Linux)</span>
+aiguard install kimi     <span class="c"># or: aiguard install claude</span></pre>
+          </div>
+          <h3>3 · Approve a challenge when one appears</h3>
+          <div class="codeblock">
+            <button class="copy" type="button">copy</button>
+            <pre>aiguard approve &lt;token&gt;          <span class="c"># Touch ID on macOS</span>
+aiguard approve --totp &lt;token&gt;   <span class="c"># force TOTP</span></pre>
+          </div>
+        </div>
+        <div>
+          <h3>Requirements</h3>
+          <ul class="req-list">
+            <li>Python 3.11 or newer</li>
+            <li>macOS (Touch&nbsp;ID or TOTP) or Linux (TOTP)</li>
+            <li><a href="https://pipx.pypa.io/">pipx</a></li>
+            <li>Kimi Code CLI or Claude Code</li>
+          </ul>
+          <div class="admonition note">
+            <p class="admonition-title">Package vs. command</p>
+            <p>The PyPI package is <code>aiguard-gate</code>; the installed CLI
+            is <code>aiguard</code>.</p>
+          </div>
+          <div class="admonition warning">
+            <p class="admonition-title">Beta software</p>
+            <p>Evaluate on non-critical machines first. Policy rules, state
+            formats, and CLI behavior may change between pre-releases without
+            a deprecation period.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <span><strong>AIGuard</strong> — Execution-Layer Security for AI agents</span>
+      <ul class="footer-links">
+        <li><a href="https://github.com/alreshi/aiguard">GitHub</a></li>
+        <li><a href="https://github.com/alreshi/aiguard/blob/main/LICENSE">Apache-2.0</a></li>
+        <li><a href="https://pypi.org/project/aiguard-gate/">PyPI</a></li>
+        <li><a href="security.html">Security policy</a></li>
+        <li><a href="docs/index.html">Docs</a></li>
+      </ul>
+    </div>
+    <p class="footer-note">Beta software, provided “as is”, without warranty of any
+    kind. AIGuard is a defense-in-depth guardrail, not a security boundary. You are
+    responsible for reviewing every command you approve.</p>
+  </div>
+</footer>
+
+</body>
+</html>

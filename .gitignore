@@ -34,3 +34,6 @@ Thumbs.db
 # Local agent tooling (personal, not project content)
 .agents/
 skills-lock.json
+
+# Browser automation artifacts
+.playwright-mcp/

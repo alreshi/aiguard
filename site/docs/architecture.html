@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Architecture — AIGuard docs</title>
+<meta name="description" content="AIGuard architecture: PreToolUse hook evaluation flow, policy engine order, out-of-band challenge/approval, TOTP, audit log, and state layout.">
+<link rel="canonical" href="https://alreshi.github.io/aiguard/docs/architecture.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AIGuard — Architecture">
+<meta property="og:description" content="Evaluation flow, policy engine, and approval flow of AIGuard.">
+<meta property="og:url" content="https://alreshi.github.io/aiguard/docs/architecture.html">
+<!-- TODO(design): replace with og-image.png (1200x630) before launch -->
+<meta property="og:image" content="https://alreshi.github.io/aiguard/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://alreshi.github.io/aiguard/assets/og-image.png">
+<meta name="theme-color" content="#0c1116">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<script>
+(function(){try{var t=localStorage.getItem("aiguard-theme");if(!t){t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";}document.documentElement.dataset.theme=t;}catch(e){}})();
+</script>
+<link rel="stylesheet" href="../css/site.css">
+<script src="../js/main.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="beta-banner" role="status">
+  <strong>Beta</strong> — for evaluation and testing only. AIGuard is a guardrail, not a security boundary.
+  <a href="risk-disclosures.html">Read the risk disclosures</a>
+</div>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html" aria-label="AIGuard home">
+      <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2.5 27.5 6.4v7.8c0 7.7-5.2 12.9-11.5 15.3C9.7 27.1 4.5 21.9 4.5 14.2V6.4Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M11 12.5l4 3.7-4 3.7M17.5 20h5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      AIGuard
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="index.html" aria-current="page">Docs</a>
+      <a href="../security.html">Security</a>
+      <a href="https://github.com/alreshi/aiguard">GitHub</a>
+      <button class="theme-toggle" type="button" aria-label="Switch theme">
+        <svg class="icon-sun" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6 13 13M13 3l-1.4 1.4M4.4 11.6 3 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <svg class="icon-moon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" hidden><path d="M13.5 9.5A6 6 0 0 1 6.5 2.5a6 6 0 1 0 7 7Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap docs-layout">
+  <button class="sidebar-toggle" type="button" aria-expanded="false" aria-controls="docs-nav">Documentation menu</button>
+  <aside class="docs-sidebar">
+    <nav id="docs-nav" aria-label="Documentation">
+      <p class="nav-group">Get started</p>
+      <a href="index.html">Overview</a>
+      <a href="installation.html">Installation</a>
+      <p class="nav-group">Reference</p>
+      <a href="architecture.html" aria-current="page">Architecture</a>
+      <a href="releases.html">Releases</a>
+      <a href="risk-disclosures.html">Risk Disclosures</a>
+      <p class="nav-group">Project</p>
+      <a href="security.html">Security</a>
+      <a href="contributing.html">Contributing</a>
+    </nav>
+  </aside>
+
+  <article class="docs-content" id="main">
+    <h1>Architecture</h1>
+    <p class="page-desc">A local, file-based system with no network component.
+    All state lives in <code>~/.aiguard/</code>.</p>
+
+    <h2 id="system">System overview</h2>
+    <p>The assistant's PreToolUse hook pipes each command, as JSON on stdin, to
+    <code>aiguard-evaluate</code>. The policy engine returns a Decision; the
+    exit code tells the assistant whether to run the command.</p>
+    <div class="codeblock">
+      <button class="copy" type="button">copy</button>
+      <pre>┌─────────────────┐   PreToolUse hook (JSON on stdin)
+│  AI assistant   │──────────────────────────────┐
+│ (Kimi / Claude) │                              ▼
+└─────────────────┘                    ┌───────────────────┐
+        ▲                              │ aiguard-evaluate  │
+        │ exit 0: run                  └─────────┬─────────┘
+        │ exit 2: blocked,                       │ Decision
+        │   relay challenge token                ▼
+        ▼                              ┌───────────────────┐
+┌─────────────────┐  approve &lt;token&gt;   │  policy engine    │
+│  user terminal  │───────────────────▶│ allow / ask /     │
+│  aiguard approve│                    │ block (+ risk)    │
+└─────────────────┘                    └───────────────────┘
+   Touch ID (macOS) / TOTP (Linux)           │
+                                             ▼
+                        ~/.aiguard/: challenges/  approved/  audit.jsonl</pre>
+    </div>
+
+    <h2 id="decision">The Decision contract</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Field</th><th>Values</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>action</code></td>
+              <td><span class="badge badge-allow">allow</span>
+                  <span class="badge badge-ask">ask</span>
+                  <span class="badge badge-block">block</span></td>
+              <td>What happens to the command</td></tr>
+          <tr><td><code>risk</code></td>
+              <td><span class="badge badge-low">low</span>
+                  <span class="badge badge-medium">medium</span>
+                  <span class="badge badge-high">high</span>
+                  <span class="badge badge-critical">critical</span></td>
+              <td>Informational severity — never changes the action on its own</td></tr>
+          <tr><td><code>warning</code></td><td>string</td>
+              <td>Plain-English explanation of what the command does</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="evaluation">Evaluation flow</h2>
+    <ol>
+      <li>Prune expired challenges and approvals (opportunistic GC).</li>
+      <li>Parse the hook payload (<code>tool_input.command</code>) from stdin.</li>
+      <li>The policy engine returns a Decision.</li>
+      <li><code>allow</code> → audit, exit 0. <code>block</code> → audit,
+        exit 2 with the warning.</li>
+      <li><code>ask</code> → if a matching approval exists for the exact
+        command hash, consume it (single-use), audit, exit 0. Otherwise create
+        a challenge file, audit, exit 2 with
+        <code>AIGUARD_CHALLENGE:&lt;token&gt;</code> on stderr.</li>
+      <li>Any internal error → exit 2. <strong>AIGuard fails closed.</strong></li>
+    </ol>
+    <div class="admonition danger">
+      <p class="admonition-title">But the platforms fail open</p>
+      <p>Per Kimi Code CLI and Claude Code documentation, a hook that times
+      out or crashes allows the command to run. AIGuard cannot be a hard gate —
+      do not use it as your sole security barrier.</p>
+    </div>
+
+    <h2 id="policy">Policy engine: order of evaluation</h2>
+    <p>First match wins:</p>
+    <ol>
+      <li><strong>Absolute Block</strong> — recursive+force delete of protected
+        targets (<code>/</code>, <code>~</code>, <code>$HOME</code>, …) and any
+        write/delete/cp/mv/ln into <code>~/.aiguard/</code>. Cannot be
+        overridden by anything.</li>
+      <li><strong>User Policy</strong> — your <code>block</code>,
+        <code>ask</code>, <code>allow</code> regex patterns in
+        <code>~/.aiguard/policy.toml</code>.</li>
+      <li><strong>Built-in high-risk patterns</strong> — <code>curl|bash</code>,
+        <code>sudo</code>, <code>dd of=/dev/</code>, <code>git push
+        --force</code>, … → <code>ask</code>.</li>
+      <li><strong>Shell metacharacters</strong> (<code>;|&amp;&lt;&gt;`$()</code>
+        and newlines) → <code>ask</code>.</li>
+      <li><strong>Safe prefixes</strong> (<code>ls</code>, <code>pwd</code>,
+        <code>git status</code>, …) → <code>allow</code>.</li>
+      <li><strong>Default</strong> → <code>ask</code>.</li>
+    </ol>
+    <p>An example user policy:</p>
+    <div class="codeblock">
+      <button class="copy" type="button">copy</button>
+      <pre>block = ["npm publish", "kubectl delete"]
+ask = ["^docker "]
+allow = ["^make test$"]</pre>
+    </div>
+    <div class="admonition note">
+      <p class="admonition-title">User policy can restrict, never unblock</p>
+      <p>Your rules can add restrictions and widen auto-allow, but no user
+      rule — and no approval — can override an Absolute Block.</p>
+    </div>
+
+    <h2 id="approval">Challenge &amp; approval flow</h2>
+    <ul>
+      <li>A challenge token is <code>sha256(command)[:12]</code> — deterministic
+        per exact command string, so any edit to the command requires
+        re-approval.</li>
+      <li>Approval authenticates you (Touch&nbsp;ID on macOS via PyObjC
+        LocalAuthentication; TOTP elsewhere or with <code>--totp</code>), moves
+        the challenge file from <code>challenges/</code> to
+        <code>approved/</code>, and stamps <code>expires_at = now + 300</code>.</li>
+      <li>On retry, the approval file is consumed (single-use). Approvals
+        expire after 5 minutes; unapproved challenges are pruned after 1 hour.</li>
+    </ul>
+
+    <h2 id="totp">TOTP</h2>
+    <p>RFC&nbsp;6238, SHA-1, 6 digits, 30-second period, verification window
+    ±1 step. Three failed verification attempts trigger a 5-minute lockout.
+    Secrets live in the system keyring where available, with a 0600-file
+    fallback (<code>~/.aiguard/totp-secret</code>) on headless systems.</p>
+
+    <h2 id="state">State layout</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Path</th><th>Mode</th><th>Contents</th></tr></thead>
+        <tbody>
+          <tr><td><code>~/.aiguard/</code></td><td>0700</td>
+              <td>All AIGuard state</td></tr>
+          <tr><td><code>challenges/</code>, <code>approved/</code></td><td>0600 files</td>
+              <td>Pending challenges and single-use approvals</td></tr>
+          <tr><td><code>audit.jsonl</code></td><td>0600</td>
+              <td>Append-only log of every command, verbatim</td></tr>
+          <tr><td><code>policy.toml</code></td><td>—</td>
+              <td>Your user policy</td></tr>
+          <tr><td><code>totp-secret</code></td><td>0600</td>
+              <td>TOTP fallback when no keyring is available</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="admonition warning">
+      <p class="admonition-title">Do not weaken these permissions</p>
+      <p>The 0700/0600 modes are part of the security model. The audit log may
+      contain secrets passed as CLI arguments — handle it as sensitive.</p>
+    </div>
+
+    <h2 id="design">Design records</h2>
+    <p>Significant decisions are recorded as ADRs in the repository
+    (<code>docs/adr/</code>) — including <em>PreToolUse hooks over native
+    instrumentation</em> and <em>out-of-band challenge-response</em>. The
+    vocabulary used here (<em>Decision</em>, <em>Action</em>, <em>Absolute
+    Block</em>, <em>Challenge</em>, <em>Approval</em>, <em>Fail-Open</em>) is
+    defined in the repository's <code>GLOSSARY.md</code>.</p>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <span><strong>AIGuard</strong> — Execution-Layer Security for AI agents</span>
+      <ul class="footer-links">
+        <li><a href="https://github.com/alreshi/aiguard">GitHub</a></li>
+        <li><a href="https://github.com/alreshi/aiguard/blob/main/LICENSE">Apache-2.0</a></li>
+        <li><a href="https://pypi.org/project/aiguard-gate/">PyPI</a></li>
+        <li><a href="../security.html">Security policy</a></li>
+        <li><a href="index.html">Docs</a></li>
+      </ul>
+    </div>
+    <p class="footer-note">Beta software, provided “as is”, without warranty of any
+    kind. AIGuard is a defense-in-depth guardrail, not a security boundary. You are
+    responsible for reviewing every command you approve.</p>
+  </div>
+</footer>
+
+</body>
+</html>

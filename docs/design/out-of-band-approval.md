@@ -1,8 +1,8 @@
 **Version**: 6.1.0  
 **Status**: Design document — historical record (current release: 6.1.0b1 **Beta**; see CHANGELOG.md)  
 **Target Platforms**: macOS (Primary, with Touch ID via PyObjC), Linux (Secondary, with TOTP)  
-**Package Name**: `aiguard-box`  
-**Installation**: `pipx install aiguard-box`
+**Package Name**: `aiguard-gate`  
+**Installation**: `pipx install aiguard-gate`
 
 ---
 
@@ -87,7 +87,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "aiguard-box"
+name = "aiguard-gate"
 version = "6.1.0"
 description = "Out-of-band command approval for AI coding assistants"
 readme = "README.md"
@@ -412,7 +412,7 @@ def authenticate_macos() -> bool:
         return success
     except ImportError:
         console.print("[yellow]⚠️ PyObjC not installed. Falling back to TOTP.[/yellow]")
-        console.print("[dim]Install with: pipx install aiguard-box[macos][/dim]")
+        console.print("[dim]Install with: pipx install aiguard-gate[macos][/dim]")
         return False
     except Exception as e:
         console.print(f"[yellow]⚠️ Touch ID failed: {e}. Falling back to TOTP.[/yellow]")
@@ -719,10 +719,10 @@ class TestV61:
 
 ### 1. Install
 ```bash
-pipx install aiguard-box
+pipx install aiguard-gate
 
 # On macOS, install Touch ID support
-pipx inject aiguard-box pyobjc-framework-LocalAuthentication
+pipx inject aiguard-gate pyobjc-framework-LocalAuthentication
 ```
 
 ### 2. Configure TOTP (Required on Linux, Optional on macOS)
