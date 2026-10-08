@@ -40,23 +40,20 @@ Nothing is published unless one of these triggers is fired deliberately.
 
 ### One-time setup: register the trusted publisher
 
-Because `aiguard-cli` is not yet on PyPI, use the *pending publisher* flow
-(once per index):
+**PyPI: done** (2026-10-08). A pending publisher for `aiguard-box` is
+registered: owner `alreshi`, repository `aiguard`, workflow `release.yml`,
+environment *(any)*. After the first successful publish it becomes a regular
+trusted publisher and the project page is created.
 
-1. Log in to [PyPI](https://pypi.org) (and [TestPyPI](https://test.pypi.org)
-   for rehearsals). Enable 2FA on both.
-2. Go to **Account settings → Publishing → Add a new pending publisher** and
-   enter:
-   - **PyPI project name:** `aiguard-cli`
-   - **Owner:** `alreshi` · **Repository:** `aiguard`
-   - **Workflow name:** `release.yml`
-   - **Environment name:** leave blank (environment protection rules require
-     a public repo or a paid plan; add an environment later when the repo is
-     public)
-3. Repeat on TestPyPI with the same values.
+**TestPyPI: pending.** For rehearsal publishes, repeat the same registration
+at [test.pypi.org](https://test.pypi.org) (**Account settings → Publishing →
+Add a new pending publisher**) with identical values. Note: `aiguard-cli`
+could not be used — PyPI rejects it as too similar to the existing,
+unrelated `aiguard` project; the package was renamed to `aiguard-box`.
 
-After the first successful publish, the pending publisher becomes a regular
-trusted publisher and the project page exists.
+When the repository becomes public, consider adding a dedicated `pypi`
+GitHub Actions environment with protection rules and registering it on the
+publisher — this is strongly encouraged once others have commit access.
 
 ## Release process (maintainer only)
 
@@ -69,7 +66,7 @@ trusted publisher and the project page exists.
    workflow, do not flip repository visibility.
 6. **After explicit release approval:**
    - Rehearse: Actions → Release → Run workflow → target `testpypi`,
-     then verify `pip install --index-url https://test.pypi.org/simple/ aiguard-cli`.
+     then verify `pip install --index-url https://test.pypi.org/simple/ aiguard-box`.
    - Tag and push: `git tag -a vX.Y.Z -m "vX.Y.Z" && git push origin vX.Y.Z`.
      The workflow publishes to PyPI and creates the GitHub Release.
 

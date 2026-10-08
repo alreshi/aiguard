@@ -1,0 +1,30 @@
+[     218ms] [WARNING] Error with Permissions-Policy header: Unrecognized feature: 'ambient-light-sensor'. @ :0
+[     218ms] [WARNING] Error with Permissions-Policy header: Unrecognized feature: 'battery'. @ :0
+[     218ms] [WARNING] Error with Permissions-Policy header: Unrecognized feature: 'document-domain'. @ :0
+[     218ms] [WARNING] Error with Permissions-Policy header: Unrecognized feature: 'execution-while-not-rendered'. @ :0
+[     218ms] [WARNING] Error with Permissions-Policy header: Unrecognized feature: 'execution-while-out-of-viewport'. @ :0
+[     218ms] [WARNING] Error with Permissions-Policy header: Unrecognized feature: 'speaker-selection'. @ :0
+[     319ms] [WARNING] MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added. Use emitter.setMaxListeners() to increase limit @ chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/scripts/contentscript.js:14082
+[     321ms] [WARNING] MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 end listeners added. Use emitter.setMaxListeners() to increase limit @ chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/scripts/contentscript.js:14082
+[     339ms] [WARNING] ObjectMultiplex - orphaned data for stream "app-init-liveness" @ chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/scripts/contentscript.js:14082
+[     340ms] [WARNING] ObjectMultiplex - orphaned data for stream "app-init-liveness" @ chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/scripts/contentscript.js:14082
+[     341ms] [WARNING] ObjectMultiplex - orphaned data for stream "background-liveness" @ chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/scripts/contentscript.js:14082
+[     342ms] [WARNING] ObjectMultiplex - orphaned data for stream "background-liveness" @ chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/scripts/contentscript.js:14082
+[     734ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://pypi.org/_fs-ch-1T1wmsGaOgGaSxcX/pat?token=AYEQ1ETCfu1fyu9qCwSTou3rgKyXVObIXNTfQ5t9WVL3x9xSHT04b4DMPU0ap3qVGnUFfB2yomPFHwVh17qCx6QsBX4KJwuZb3pVxpQqYJw8asGjQ57YvhBdltK_W3a6JILWVQMkHo5_gPd1gBdAs3xiHVP9fsDV8de2SuRoHkjr80UNR0mLV62uxi1FrbFjOcht8bizIsOdKGPsPQOX-MfAfTFLnVkY4WPZprpoFgOJp1oqmYY5DeTi_-0YTGCxrg7kk2Jgt0FZS-1Q_eSowWrcfMJg85qFoWCy6DrYLDi6cCR94LYgR2O0Bu-WnktBO49EJU04pYIMCxKNdTn3tamY1t2FrJ3j7J7vM__2mcVCR2Bs4bha52KB9LL55X_nLXX3WOCkfZ2QfSeRTyLEFzOw_XJGRKxnvHs78IWH5xPwkRmsFWc6-OUQKTHggSq-kxJf_8nnjtYMtEvlaJqbhMdIkngKaUBKWzsqn0XgrYoq6bw=:0
+[     734ms] [LOG] PAT challenge aborted. @ https://pypi.org/_fs-ch-1T1wmsGaOgGaSxcX/script.js?reload=true:0
+[     905ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://pypi.org/fastly/logo:0
+[     909ms] [LOG] Challenge: 14cLlW5MyWoCLYb7 => 74d5a2640dd3e582edf6a03c48355a2e9fe51981c0f06e49c5564dea78b8a506 @ https://pypi.org/_fs-ch-1T1wmsGaOgGaSxcX/script.js?reload=true:0
+[     927ms] [LOG] found answer: Vm @ https://pypi.org/_fs-ch-1T1wmsGaOgGaSxcX/script.js?reload=true:0
+[    1875ms] [WARNING] Error with Permissions-Policy header: Unrecognized feature: 'ambient-light-sensor'. @ :0
+[    1875ms] [WARNING] Error with Permissions-Policy header: Unrecognized feature: 'battery'. @ :0
+[    1875ms] [WARNING] Error with Permissions-Policy header: Unrecognized feature: 'document-domain'. @ :0
+[    1875ms] [WARNING] Error with Permissions-Policy header: Unrecognized feature: 'execution-while-not-rendered'. @ :0
+[    1875ms] [WARNING] Error with Permissions-Policy header: Unrecognized feature: 'execution-while-out-of-viewport'. @ :0
+[    1875ms] [WARNING] Error with Permissions-Policy header: Unrecognized feature: 'speaker-selection'. @ :0
+[    1986ms] [WARNING] MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added. Use emitter.setMaxListeners() to increase limit @ chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/scripts/contentscript.js:14082
+[    1987ms] [WARNING] MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 end listeners added. Use emitter.setMaxListeners() to increase limit @ chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/scripts/contentscript.js:14082
+[    1994ms] [WARNING] ObjectMultiplex - orphaned data for stream "app-init-liveness" @ chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/scripts/contentscript.js:14082
+[    1995ms] [WARNING] ObjectMultiplex - orphaned data for stream "app-init-liveness" @ chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/scripts/contentscript.js:14082
+[    1996ms] [WARNING] ObjectMultiplex - orphaned data for stream "background-liveness" @ chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/scripts/contentscript.js:14082
+[    1996ms] [WARNING] ObjectMultiplex - orphaned data for stream "background-liveness" @ chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/scripts/contentscript.js:14082
+[    2052ms] [ERROR] Failed to load resource: net::ERR_BLOCKED_BY_CLIENT @ https://media.ethicalads.io/abp/px.gif?ch=2&rn=4.144670398233356:0

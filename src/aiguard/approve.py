@@ -24,7 +24,7 @@ def authenticate_macos() -> bool:
         from LocalAuthentication import LAContext, LAPolicyDeviceOwnerAuthentication
     except ImportError:
         console.print("[yellow]⚠️ PyObjC LocalAuthentication not installed. "
-                      "(pipx inject aiguard-cli 'aiguard-cli[macos]')[/yellow]")
+                      "(pipx inject aiguard-box 'aiguard-box[macos]')[/yellow]")
         return False
 
     try:
