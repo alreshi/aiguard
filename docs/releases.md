@@ -25,19 +25,53 @@ The version is declared in exactly two places, which must stay in sync:
 - `pyproject.toml` → `[project] version`
 - `src/aiguard/__init__.py` → `__version__`
 
+## Release automation
+
+Releases are built and published by [.github/workflows/release.yml](../.github/workflows/release.yml)
+using PyPI **Trusted Publishing** (OIDC) — no API tokens are stored anywhere.
+The workflow runs the test suite, builds the sdist and wheel, then publishes:
+
+- **Push a tag `vX.Y.Z`** → publish to PyPI and create a GitHub Release
+  (marked *pre-release* automatically for `a`/`b`/`rc` versions).
+- **Manual run** (Actions → Release → Run workflow) → publish to TestPyPI
+  for a rehearsal, or to PyPI without a tag.
+
+Nothing is published unless one of these triggers is fired deliberately.
+
+### One-time setup: register the trusted publisher
+
+Because `aiguard-cli` is not yet on PyPI, use the *pending publisher* flow
+(once per index):
+
+1. Log in to [PyPI](https://pypi.org) (and [TestPyPI](https://test.pypi.org)
+   for rehearsals). Enable 2FA on both.
+2. Go to **Account settings → Publishing → Add a new pending publisher** and
+   enter:
+   - **PyPI project name:** `aiguard-cli`
+   - **Owner:** `alreshi` · **Repository:** `aiguard`
+   - **Workflow name:** `release.yml`
+   - **Environment name:** leave blank (environment protection rules require
+     a public repo or a paid plan; add an environment later when the repo is
+     public)
+3. Repeat on TestPyPI with the same values.
+
+After the first successful publish, the pending publisher becomes a regular
+trusted publisher and the project page exists.
+
 ## Release process (maintainer only)
 
-1. Ensure `pytest` passes on a clean checkout.
+1. Ensure `pytest` passes on a clean checkout (CI re-runs it anyway).
 2. Update `CHANGELOG.md`: move *Unreleased* items under the new version and
    date.
 3. Bump the version in both locations above.
 4. Commit: `Release vX.Y.Z`.
-5. Tag: `git tag -a vX.Y.Z -m "vX.Y.Z"` and push with `git push --tags`.
-6. **While private:** stop here. Do not publish to PyPI, do not create a
-   GitHub Release, do not flip repository visibility.
-7. **After public approval:** build (`python -m build`), publish to PyPI
-   (`twine upload dist/*`), and create a GitHub Release from the tag with the
-   changelog entry as notes.
+5. **While private:** stop here. Do not tag, do not run the release
+   workflow, do not flip repository visibility.
+6. **After explicit release approval:**
+   - Rehearse: Actions → Release → Run workflow → target `testpypi`,
+     then verify `pip install --index-url https://test.pypi.org/simple/ aiguard-cli`.
+   - Tag and push: `git tag -a vX.Y.Z -m "vX.Y.Z" && git push origin vX.Y.Z`.
+     The workflow publishes to PyPI and creates the GitHub Release.
 
 ## Support policy
 
