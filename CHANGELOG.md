@@ -7,6 +7,12 @@ identifiers (see [docs/releases.md](docs/releases.md)).
 
 ## [Unreleased]
 
+### Changed
+
+- PyPI package renamed from `aiguard-cli` to `aiguard-box`: PyPI rejects
+  `aiguard-cli` as too similar to the existing, unrelated `aiguard` project.
+  The CLI commands (`aiguard`, `aiguard-evaluate`) are unchanged.
+
 ## [6.1.0b1] - 2026-10-08
 
 First **Beta** pre-release. Intended for evaluation, testing, and feedback

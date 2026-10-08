@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "aiguard-cli"
+name = "aiguard-box"
 version = "6.1.0b1"
 description = "Out-of-band command approval for AI coding assistants"
 readme = "README.md"

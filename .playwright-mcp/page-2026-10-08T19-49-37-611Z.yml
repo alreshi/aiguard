@@ -1,0 +1,260 @@
+- generic [ref=f8e1]:
+  - link "Skip to main content" [ref=f8e2] [cursor=pointer]:
+    - /url: "#content"
+  - banner [ref=f8e3]:
+    - generic [ref=f8e5]:
+      - generic [ref=f8e6]:
+        - link [ref=f8e8] [cursor=pointer]:
+          - /url: /
+          - img "PyPI" [ref=f8e9]
+        - search [ref=f8e10]:
+          - generic [ref=f8e11]: Search PyPI
+          - textbox "Search PyPI" [ref=f8e12]:
+            - /placeholder: Type '/' to search projects
+          - button "Search" [ref=f8e13]
+      - generic [ref=f8e17]:
+        - navigation "Main navigation" [ref=f8e18]:
+          - button "View menu" [ref=f8e19] [cursor=pointer]:
+            - img "User Image" [ref=f8e20]
+            - text: alreshi
+        - navigation "Localization" [ref=f8e23]:
+          - button "Change language" [ref=f8e24] [cursor=pointer]
+  - main [ref=f8e26]:
+    - generic [ref=f8e27]:
+      - navigation "Breadcrumbs" [ref=f8e28]:
+        - list [ref=f8e29]:
+          - listitem [ref=f8e30]: Your account
+      - generic [ref=f8e31]:
+        - navigation "Account navigation" [ref=f8e34]:
+          - list [ref=f8e35]:
+            - listitem [ref=f8e36]:
+              - link "Your projects" [ref=f8e37] [cursor=pointer]:
+                - /url: /manage/projects/
+            - listitem [ref=f8e39]:
+              - link "Your organizations" [ref=f8e40] [cursor=pointer]:
+                - /url: /manage/organizations/
+            - listitem [ref=f8e42]:
+              - link "Account settings" [ref=f8e43] [cursor=pointer]:
+                - /url: /manage/account/
+            - listitem [ref=f8e45]:
+              - link "Publishing" [ref=f8e46] [cursor=pointer]:
+                - /url: /manage/account/publishing/
+        - generic [ref=f8e48]:
+          - navigation "Account navigation":
+            - list:
+              - listitem
+              - listitem
+              - listitem
+              - listitem
+          - generic [ref=f8e49]:
+            - generic [ref=f8e50]:
+              - heading "Trusted Publisher Management" [level=1] [ref=f8e51]
+              - paragraph [ref=f8e52]: OpenID Connect (OIDC) provides a flexible, credential-free mechanism for delegating publishing authority for a PyPI package to a trusted third party service, like GitHub Actions.
+              - paragraph [ref=f8e53]: PyPI users and projects can use trusted publishers to automate their release processes, without needing to use API tokens or passwords.
+              - paragraph [ref=f8e54]:
+                - text: You can read more about trusted publishers and how to use them
+                - link "here" [ref=f8e55] [cursor=pointer]:
+                  - /url: https://docs.pypi.org/trusted-publishers/
+                - text: .
+              - heading "Manage publishers" [level=2] [ref=f8e56]
+              - heading "Projects with active publishers" [level=3] [ref=f8e57]
+              - paragraph [ref=f8e58]: No publishers are currently configured. Publishers for existing projects can be added in the publishing configuration for each individual project.
+              - heading "Pending publishers" [level=3] [ref=f8e59]
+              - table [ref=f8e60]:
+                - rowgroup [ref=f8e61]:
+                  - row [ref=f8e62]:
+                    - columnheader "Pending project name" [ref=f8e63]
+                    - columnheader "Publisher" [ref=f8e64]
+                    - columnheader "Details" [ref=f8e65]
+                    - columnheader [ref=f8e66]
+                - rowgroup [ref=f8e67]:
+                  - row [ref=f8e68]:
+                    - cell "aiguard-shield" [ref=f8e69]
+                    - cell "GitHub" [ref=f8e70]
+                    - cell [ref=f8e71]:
+                      - generic [ref=f8e72]:
+                        - text: "Repository:"
+                        - link "alreshi/aiguard" [ref=f8e73] [cursor=pointer]:
+                          - /url: https://github.com/alreshi/aiguard
+                        - text: "Workflow: release.yml Environment name: (Any)"
+                    - cell [ref=f8e74]:
+                      - link "Remove" [ref=f8e75] [cursor=pointer]:
+                        - /url: "#remove-publisher-a368e2de-a73a-4f8e-822d-984e4d4396de"
+            - generic [ref=f8e76]:
+              - heading "Add a new pending publisher" [level=2] [ref=f8e77]
+              - paragraph [ref=f8e78]: You can use this page to register "pending" trusted publishers.
+              - paragraph [ref=f8e79]:
+                - text: These publishers behave similarly to trusted publishers registered against specific projects, except that they allow users to
+                - strong [ref=f8e80]: create
+                - text: the project if it doesn't already exist. Once the project is created, the "pending" publisher becomes an ordinary trusted publisher. You can read more about "pending" and ordinary trusted publishers
+                - link "here" [ref=f8e81] [cursor=pointer]:
+                  - /url: https://docs.pypi.org/trusted-publishers/
+                - text: .
+              - paragraph [ref=f8e82]:
+                - text: Configuring a "pending" publisher for a project name does
+                - strong [ref=f8e83]: not
+                - text: reserve that name. Until the project is created, any other user may create it, including via their own "pending" publisher.
+              - generic [ref=f8e84]:
+                - generic [ref=f8e85]:
+                  - button "GitHub" [ref=f8e86] [cursor=pointer]
+                  - button "GitLab" [ref=f8e87] [cursor=pointer]
+                  - button "Google" [ref=f8e88] [cursor=pointer]
+                  - button "ActiveState" [ref=f8e89] [cursor=pointer]
+                - generic [ref=f8e90]:
+                  - paragraph [ref=f8e91]:
+                    - text: Read more about GitHub Actions' OpenID Connect support
+                    - link "here" [ref=f8e92] [cursor=pointer]:
+                      - /url: https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect
+                    - text: .
+                  - generic [ref=f8e93]:
+                    - generic [ref=f8e94]:
+                      - generic [ref=f8e95]: PyPI Project Name (required)
+                      - textbox "PyPI Project Name (required) PyPI Project Name (required) PyPI Project Name (required) PyPI Project Name (required)" [ref=f8e96]:
+                        - /placeholder: project name
+                      - paragraph [ref=f8e97]: The project that will be created on PyPI when this publisher is used
+                    - generic [ref=f8e98]:
+                      - generic [ref=f8e99]: Owner (required)
+                      - textbox "Owner (required)" [ref=f8e100]:
+                        - /placeholder: owner
+                      - paragraph [ref=f8e101]: The GitHub organization name or GitHub username that owns the repository
+                    - generic [ref=f8e102]:
+                      - generic [ref=f8e103]: Repository name (required)
+                      - textbox "Repository name (required)" [ref=f8e104]:
+                        - /placeholder: repository
+                      - paragraph [ref=f8e105]: The name of the GitHub repository that contains the publishing workflow
+                    - generic [ref=f8e106]:
+                      - generic [ref=f8e107]: Workflow name (required)
+                      - textbox "Workflow name (required)" [ref=f8e108]:
+                        - /placeholder: workflow.yml
+                      - paragraph [ref=f8e109]:
+                        - text: The filename of the publishing workflow. This file should exist in the
+                        - code [ref=f8e110]: .github/workflows/
+                        - text: directory in the repository configured above.
+                    - generic [ref=f8e111]:
+                      - generic [ref=f8e112]: Environment name (optional)
+                      - textbox "Environment name (optional) Environment name (optional)" [ref=f8e113]:
+                        - /placeholder: pypi
+                      - paragraph [ref=f8e114]:
+                        - text: The name of the
+                        - link "GitHub Actions environment" [ref=f8e115] [cursor=pointer]:
+                          - /url: https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment
+                        - text: that the above workflow uses for publishing. This should be configured under the repository's settings. While not required, a dedicated publishing environment is
+                        - strong [ref=f8e116]: strongly
+                        - text: encouraged,
+                        - strong [ref=f8e117]: especially
+                        - text: if your repository has maintainers with commit access who shouldn't have PyPI publishing access.
+                    - button "Add" [ref=f8e119] [cursor=pointer]
+  - contentinfo [ref=f8e120]:
+    - generic [ref=f8e121]:
+      - generic [ref=f8e122]:
+        - link "PyPI" [ref=f8e123] [cursor=pointer]:
+          - /url: /
+        - paragraph [ref=f8e125]:
+          - text: Developed and maintained by the
+          - link "Python Software Foundation" [ref=f8e126] [cursor=pointer]:
+            - /url: https://www.python.org/psf/
+          - text: and Python community, for the Python community.
+        - paragraph [ref=f8e127]:
+          - 'link "Status: Minor Service Outage" [ref=f8e129] [cursor=pointer]':
+            - /url: https://status.python.org/
+        - link "Donate today!" [ref=f8e131] [cursor=pointer]:
+          - /url: https://donate.pypi.org
+      - generic [ref=f8e132]:
+        - generic [ref=f8e133]:
+          - heading "Help" [level=2] [ref=f8e134]
+          - navigation "Help navigation" [ref=f8e135]:
+            - list [ref=f8e136]:
+              - listitem [ref=f8e137]:
+                - link "Installing packages" [ref=f8e138] [cursor=pointer]:
+                  - /url: https://packaging.python.org/tutorials/installing-packages/
+              - listitem [ref=f8e139]:
+                - link "Uploading packages" [ref=f8e140] [cursor=pointer]:
+                  - /url: https://packaging.python.org/tutorials/packaging-projects/
+              - listitem [ref=f8e141]:
+                - link "User guide" [ref=f8e142] [cursor=pointer]:
+                  - /url: https://packaging.python.org/
+              - listitem [ref=f8e143]:
+                - link "Project name retention" [ref=f8e144] [cursor=pointer]:
+                  - /url: https://www.python.org/dev/peps/pep-0541/
+              - listitem [ref=f8e145]:
+                - link "FAQs" [ref=f8e146] [cursor=pointer]:
+                  - /url: /help/
+        - generic [ref=f8e147]:
+          - heading "About PyPI" [level=2] [ref=f8e148]
+          - navigation "About PyPI navigation" [ref=f8e149]:
+            - list [ref=f8e150]:
+              - listitem [ref=f8e151]:
+                - link "PyPI Blog" [ref=f8e152] [cursor=pointer]:
+                  - /url: https://blog.pypi.org
+              - listitem [ref=f8e153]:
+                - link "Infrastructure dashboard" [ref=f8e154] [cursor=pointer]:
+                  - /url: https://dtdg.co/pypi
+              - listitem [ref=f8e155]:
+                - link "Statistics" [ref=f8e156] [cursor=pointer]:
+                  - /url: /stats/
+              - listitem [ref=f8e157]:
+                - link "Logos & trademarks" [ref=f8e158] [cursor=pointer]:
+                  - /url: /trademarks/
+              - listitem [ref=f8e159]:
+                - link "Our sponsors" [ref=f8e160] [cursor=pointer]:
+                  - /url: /sponsors/
+        - generic [ref=f8e161]:
+          - heading "Contributing to PyPI" [level=2] [ref=f8e162]
+          - navigation "How to contribute navigation" [ref=f8e163]:
+            - list [ref=f8e164]:
+              - listitem [ref=f8e165]:
+                - link "Bugs and feedback" [ref=f8e166] [cursor=pointer]:
+                  - /url: /help/#feedback
+              - listitem [ref=f8e167]:
+                - link "Contribute on GitHub" [ref=f8e168] [cursor=pointer]:
+                  - /url: https://github.com/pypi/warehouse
+              - listitem [ref=f8e169]:
+                - link "Translate PyPI" [ref=f8e170] [cursor=pointer]:
+                  - /url: https://hosted.weblate.org/projects/pypa/warehouse/
+              - listitem [ref=f8e171]:
+                - link "Sponsor PyPI" [ref=f8e172] [cursor=pointer]:
+                  - /url: /sponsors/
+              - listitem [ref=f8e173]:
+                - link "Development credits" [ref=f8e174] [cursor=pointer]:
+                  - /url: https://github.com/pypi/warehouse/graphs/contributors
+        - generic [ref=f8e175]:
+          - heading "Using PyPI" [level=2] [ref=f8e176]
+          - navigation "Using PyPI navigation" [ref=f8e177]:
+            - list [ref=f8e178]:
+              - listitem [ref=f8e179]:
+                - link "Terms of Service" [ref=f8e180] [cursor=pointer]:
+                  - /url: https://policies.python.org/pypi.org/Terms-of-Service/
+              - listitem [ref=f8e181]:
+                - link "Report security issue" [ref=f8e182] [cursor=pointer]:
+                  - /url: /security/
+              - listitem [ref=f8e183]:
+                - link "Code of conduct" [ref=f8e184] [cursor=pointer]:
+                  - /url: https://policies.python.org/python.org/code-of-conduct/
+              - listitem [ref=f8e185]:
+                - link "Privacy Notice" [ref=f8e186] [cursor=pointer]:
+                  - /url: https://policies.python.org/pypi.org/Privacy-Notice/
+              - listitem [ref=f8e187]:
+                - link "Acceptable Use Policy" [ref=f8e188] [cursor=pointer]:
+                  - /url: https://policies.python.org/pypi.org/Acceptable-Use-Policy/
+  - list [ref=f8e190]:
+    - listitem [ref=f8e191]:
+      - text: "\"PyPI\", \"Python Package Index\", and the blocks logos are registered"
+      - link "trademarks" [ref=f8e192] [cursor=pointer]:
+        - /url: /trademarks/
+      - text: of the
+      - link "Python Software Foundation" [ref=f8e193] [cursor=pointer]:
+        - /url: https://www.python.org/psf-landing
+      - text: .
+    - listitem [ref=f8e194]:
+      - text: © 2026
+      - link "Python Software Foundation" [ref=f8e195] [cursor=pointer]:
+        - /url: https://www.python.org/psf-landing/
+    - listitem [ref=f8e196]:
+      - link "Site map" [ref=f8e197] [cursor=pointer]:
+        - /url: /sitemap/
+    - listitem [ref=f8e198]:
+      - text: Deployed from
+      - link [ref=f8e199] [cursor=pointer]:
+        - /url: https://github.com/pypi/warehouse/commit/480e77fd949509882e8c48cbf30bf6f6cb2835db
+        - code [ref=f8e200]: 480e77f
+        - text: 
