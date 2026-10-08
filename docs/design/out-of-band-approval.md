@@ -46,7 +46,7 @@ AIGuard v6.1 delivers a **complete, secure, and production-ready out-of-band app
    ▼
 4. User runs: aiguard approve a1b2c3d4e5f6
    ├─ macOS: Prompts for Touch ID (via PyObjC LocalAuthentication)
-   ├─ Linux: Prompts for 8-digit TOTP
+   ├─ Linux: Prompts for 6-digit TOTP
    ├─ On success: Moves file to ~/.aiguard/approved/a1b2c3d4e5f6.json
    └─ Sets expires_at = now + 5 minutes
    │
