@@ -12,6 +12,12 @@ Out-of-band command approval for AI coding assistants. AIGuard intercepts the
 shell commands an assistant tries to run, evaluates them against a policy, and
 gates dangerous ones behind real, platform-native human authentication.
 
+**AIGuard is an Execution-Layer Security (ELS) tool for AI agents.** ELS
+secures the layer where an agent's decisions become real actions — process
+and command execution on your machine. It complements model-level and
+prompt-level defenses, which cannot prevent a compromised or fallible agent
+from *executing* something dangerous.
+
 - **macOS**: Touch ID (via PyObjC LocalAuthentication)
 - **Linux**: 6-digit TOTP (RFC 6238, works with any authenticator app)
 

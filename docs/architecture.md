@@ -1,5 +1,10 @@
 # Architecture Overview
 
+AIGuard is an **Execution-Layer Security (ELS)** tool for AI agents: it
+operates at the execution layer, where an agent's decisions turn into real
+processes on the host — independent of the model, prompt, or agent framework
+that produced them.
+
 ## Repository structure
 
 ```text

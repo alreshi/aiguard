@@ -6,7 +6,9 @@
 
 ## Scope
 
-AIGuard is a **guardrail**, not a sandbox. Its threat model is the
+AIGuard is an **Execution-Layer Security (ELS)** tool — it secures the point
+where an AI agent's decisions become executed commands. It is a **guardrail**,
+not a sandbox. Its threat model is the
 honest-but-fallible AI assistant: it adds friction, authentication, and an
 audit trail around dangerous shell commands. It does not defend against a
 deliberately adversarial agent, and it does not gate file writes or network
