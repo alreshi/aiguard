@@ -1,0 +1,19 @@
+<!-- TODO(design): placeholder only. Before launch, replace with a real
+     1200x630 PNG (site/assets/og-image.png) — most social scrapers do not
+     render SVG og:images. Update the og:image / twitter:image meta tags
+     in every page when the PNG lands. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <rect width="1200" height="630" fill="#0c1116"/>
+  <g transform="translate(120,215) scale(6)">
+    <path d="M16 2.5 27.5 6.4v7.8c0 7.7-5.2 12.9-11.5 15.3C9.7 27.1 4.5 21.9 4.5 14.2V6.4Z"
+          fill="none" stroke="#34d0a4" stroke-width="2.2" stroke-linejoin="round"/>
+    <path d="M11 12.5l4 3.7-4 3.7M17.5 20h5" fill="none" stroke="#34d0a4"
+          stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="360" y="290" font-family="ui-monospace, Menlo, monospace" font-size="88"
+        font-weight="700" fill="#e3ebf2">AIGuard</text>
+  <text x="360" y="360" font-family="-apple-system, Segoe UI, sans-serif" font-size="36"
+        fill="#93a3b1">Execution-Layer Security for AI agents</text>
+  <text x="360" y="430" font-family="ui-monospace, Menlo, monospace" font-size="28"
+        fill="#34d0a4">allow &#183; ask &#183; block</text>
+</svg>

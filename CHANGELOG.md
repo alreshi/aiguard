@@ -9,7 +9,7 @@ identifiers (see [docs/releases.md](docs/releases.md)).
 
 ### Changed
 
-- PyPI package renamed from `aiguard-cli` to `aiguard-box`: PyPI rejects
+- PyPI package renamed from `aiguard-cli` to `aiguard-gate`: PyPI rejects
   `aiguard-cli` as too similar to the existing, unrelated `aiguard` project.
   The CLI commands (`aiguard`, `aiguard-evaluate`) are unchanged.
 - Positioned the project as an Execution-Layer Security (ELS) tool for AI

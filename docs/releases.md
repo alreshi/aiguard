@@ -40,7 +40,7 @@ Nothing is published unless one of these triggers is fired deliberately.
 
 ### One-time setup: register the trusted publisher
 
-**PyPI: done** (2026-10-08). A pending publisher for `aiguard-box` is
+**PyPI: done** (2026-10-08). A pending publisher for `aiguard-gate` is
 registered: owner `alreshi`, repository `aiguard`, workflow `release.yml`,
 environment *(any)*. After the first successful publish it becomes a regular
 trusted publisher and the project page is created.
@@ -49,7 +49,7 @@ trusted publisher and the project page is created.
 at [test.pypi.org](https://test.pypi.org) (**Account settings → Publishing →
 Add a new pending publisher**) with identical values. Note: `aiguard-cli`
 could not be used — PyPI rejects it as too similar to the existing,
-unrelated `aiguard` project; the package was renamed to `aiguard-box`.
+unrelated `aiguard` project; the package was renamed to `aiguard-gate`.
 
 When the repository becomes public, consider adding a dedicated `pypi`
 GitHub Actions environment with protection rules and registering it on the
@@ -66,7 +66,7 @@ publisher — this is strongly encouraged once others have commit access.
    workflow, do not flip repository visibility.
 6. **After explicit release approval:**
    - Rehearse: Actions → Release → Run workflow → target `testpypi`,
-     then verify `pip install --index-url https://test.pypi.org/simple/ aiguard-box`.
+     then verify `pip install --index-url https://test.pypi.org/simple/ aiguard-gate`.
    - Tag and push: `git tag -a vX.Y.Z -m "vX.Y.Z" && git push origin vX.Y.Z`.
      The workflow publishes to PyPI and creates the GitHub Release.
 

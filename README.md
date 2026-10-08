@@ -27,10 +27,10 @@ PreToolUse hook mechanisms).
 ## Quick start
 
 ```bash
-pipx install aiguard-box
+pipx install aiguard-gate
 
 # macOS Touch ID support:
-pipx inject aiguard-box pyobjc-framework-LocalAuthentication
+pipx inject aiguard-gate pyobjc-framework-LocalAuthentication
 ```
 
 ```bash

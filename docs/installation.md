@@ -17,13 +17,13 @@
 ## Install
 
 ```bash
-pipx install aiguard-box
+pipx install aiguard-gate
 ```
 
 ### macOS: Touch ID support
 
 ```bash
-pipx inject aiguard-box pyobjc-framework-LocalAuthentication
+pipx inject aiguard-gate pyobjc-framework-LocalAuthentication
 ```
 
 Without this package, approvals on macOS fall back to TOTP.
@@ -91,7 +91,7 @@ User `allow` rules can never override a built-in Absolute Block.
 ## Upgrading
 
 ```bash
-pipx upgrade aiguard-box
+pipx upgrade aiguard-gate
 ```
 
 State in `~/.aiguard/` (TOTP secret, policy, audit log) is preserved across
@@ -102,7 +102,7 @@ versions — check the [CHANGELOG](../CHANGELOG.md).
 
 ```bash
 aiguard uninstall kimi      # remove hooks (repeat for claude if installed)
-pipx uninstall aiguard-box
+pipx uninstall aiguard-gate
 rm -rf ~/.aiguard           # optional: removes TOTP secret, policy, audit log
 ```
 

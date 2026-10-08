@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Security — AIGuard</title>
+<meta name="description" content="AIGuard threat model, architecture guarantees and their limits, known limitations, and how to report a vulnerability privately.">
+<link rel="canonical" href="https://alreshi.github.io/aiguard/security.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="AIGuard — Security &amp; trust">
+<meta property="og:description" content="Threat model, known limitations, and private vulnerability reporting for AIGuard.">
+<meta property="og:url" content="https://alreshi.github.io/aiguard/security.html">
+<!-- TODO(design): replace with og-image.png (1200x630) before launch -->
+<meta property="og:image" content="https://alreshi.github.io/aiguard/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://alreshi.github.io/aiguard/assets/og-image.png">
+<meta name="theme-color" content="#0c1116">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<script>
+(function(){try{var t=localStorage.getItem("aiguard-theme");if(!t){t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";}document.documentElement.dataset.theme=t;}catch(e){}})();
+</script>
+<link rel="stylesheet" href="css/site.css">
+<script src="js/main.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="beta-banner" role="status">
+  <strong>Beta</strong> — for evaluation and testing only. AIGuard is a guardrail, not a security boundary.
+  <a href="docs/risk-disclosures.html">Read the risk disclosures</a>
+</div>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="AIGuard home">
+      <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2.5 27.5 6.4v7.8c0 7.7-5.2 12.9-11.5 15.3C9.7 27.1 4.5 21.9 4.5 14.2V6.4Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M11 12.5l4 3.7-4 3.7M17.5 20h5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      AIGuard
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="docs/index.html">Docs</a>
+      <a href="security.html" aria-current="page">Security</a>
+      <a href="https://github.com/alreshi/aiguard">GitHub</a>
+      <button class="theme-toggle" type="button" aria-label="Switch theme">
+        <svg class="icon-sun" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6 13 13M13 3l-1.4 1.4M4.4 11.6 3 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <svg class="icon-moon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" hidden><path d="M13.5 9.5A6 6 0 0 1 6.5 2.5a6 6 0 1 0 7 7Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <article class="section">
+    <div class="wrap" style="max-width: 860px;">
+      <p class="eyebrow">Security &amp; trust</p>
+      <h1>Security, stated plainly</h1>
+      <p class="lede muted" style="font-size: var(--text-lg);">AIGuard is a
+      <strong>guardrail</strong>: friction, authentication, and an audit trail
+      around the shell commands an AI assistant tries to run. This page is the
+      full, unsugarcoated version of what that means.</p>
+
+      <h2 id="threat-model">Threat model</h2>
+      <div class="threat-grid">
+        <div class="card threat-in">
+          <h3>In scope: honest-but-fallible</h3>
+          <p>A well-intentioned assistant that makes mistakes: hallucinated
+          flags, wrong working directory, over-broad deletes, commands that do
+          more than you asked. AIGuard adds friction and a human checkpoint
+          exactly here.</p>
+        </div>
+        <div class="card threat-out">
+          <h3>Out of scope: adversarial</h3>
+          <p>A deliberately malicious or prompt-injected assistant that crafts
+          evasive, obfuscated, or encoded commands may bypass the regex-based
+          policy. AIGuard does not defend against this, and does not claim to.</p>
+        </div>
+      </div>
+      <p>AIGuard is an <strong>Execution-Layer Security (ELS)</strong> tool: it
+      secures the point where an agent's decisions become executed commands. It
+      complements model-level and prompt-level defenses; it does not replace
+      them, and it does not gate file writes or network access performed
+      without spawning a command.</p>
+
+      <h2 id="guarantees">Architecture guarantees — and their limits</h2>
+      <ul>
+        <li><strong>AIGuard fails closed.</strong> Any internal error in
+          <code>aiguard-evaluate</code> blocks the command.</li>
+        <li><strong>The platforms fail open.</strong> Both Kimi Code CLI and
+          Claude Code allow a command when a hook times out or crashes. This is
+          documented platform behavior, outside AIGuard's control.</li>
+        <li><strong>Approvals</strong> are single-use, bound to the exact
+          command string (SHA-256, truncated to 12 hex chars), and expire
+          after 5 minutes.</li>
+        <li><strong>Absolute Blocks</strong> (<code>rm -rf /</code> and
+          equivalents, writes to <code>~/.aiguard/</code>) cannot be overridden
+          by any approval or user policy.</li>
+        <li><strong>State permissions:</strong> <code>~/.aiguard/</code> is
+          0700; challenge, approval, audit, and TOTP files are 0600.</li>
+        <li><strong>TOTP secrets</strong> are stored in the system keyring
+          where available, with a 0600-file fallback on headless systems.</li>
+        <li><strong>Audit log</strong> (<code>~/.aiguard/audit.jsonl</code>)
+          records every command <strong>verbatim</strong>. Commands may contain
+          secrets; treat the file as sensitive.</li>
+      </ul>
+
+      <h2 id="limitations">Known limitations</h2>
+      <ul>
+        <li><strong>Regex-based policy.</strong> Obfuscated, encoded, or novel
+          dangerous commands may evade the built-in patterns. The default for
+          unrecognized commands is <code>ask</code>, but a small set of common
+          safe prefixes is auto-allowed.</li>
+        <li><strong>No protection within an approved command.</strong> A
+          command is approved as a whole; what a script then does is not
+          constrained.</li>
+        <li><strong>Presence, not judgment.</strong> Touch&nbsp;ID and TOTP
+          confirm an authorized human is present — not that the human read the
+          command. Read every command before approving.</li>
+        <li><strong>Notification leakage.</strong> The optional daemon shows
+          the first 50 characters of a challenged command in a desktop
+          notification.</li>
+        <li><strong>Keyring fallback.</strong> On headless systems the TOTP
+          secret lives in a 0600 file; anyone who can read it can approve
+          commands.</li>
+        <li><strong>Single-user design.</strong> State assumes one user
+          account on one machine. Shared accounts and multi-machine sync are
+          unsupported.</li>
+        <li><strong>Beta quality.</strong> Defects may exist in exactly the
+          components meant to protect you. AIGuard must not be your only
+          safeguard — maintain independent backups.</li>
+      </ul>
+      <p>The complete operational risk statement is in
+      <a href="docs/risk-disclosures.html">Risk Disclosures</a>.</p>
+
+      <h2 id="reporting">Reporting a vulnerability</h2>
+      <div class="admonition note">
+        <p class="admonition-title">Report privately</p>
+        <p>Please report security issues <strong>privately</strong> via a
+        <a href="https://github.com/alreshi/aiguard/security/advisories/new">GitHub
+        Security Advisory</a> rather than a public issue. While the repository
+        is private, contact the maintainer directly.</p>
+      </div>
+      <p>Please include:</p>
+      <ul>
+        <li>the affected AIGuard version and platform;</li>
+        <li>the assistant (Kimi Code CLI / Claude Code) and its version;</li>
+        <li>steps to reproduce;</li>
+        <li>whether the issue lets a command bypass policy evaluation or
+          approval.</li>
+      </ul>
+
+      <h2 id="supported">Supported versions</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Version</th><th>Supported</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>6.1.0bx (Beta)</td><td>Latest pre-release only</td></tr>
+            <tr><td>&lt; 6.1</td><td>No</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="admonition danger">
+        <p class="admonition-title">If something goes wrong</p>
+        <p>1. Stop the assistant session.
+        2. Remove the hooks: <code>aiguard uninstall kimi</code> /
+        <code>aiguard uninstall claude</code>.
+        3. Report the problem — security issues privately per above, everything
+        else as a <a href="https://github.com/alreshi/aiguard/issues">GitHub
+        issue</a>.</p>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <span><strong>AIGuard</strong> — Execution-Layer Security for AI agents</span>
+      <ul class="footer-links">
+        <li><a href="https://github.com/alreshi/aiguard">GitHub</a></li>
+        <li><a href="https://github.com/alreshi/aiguard/blob/main/LICENSE">Apache-2.0</a></li>
+        <li><a href="https://pypi.org/project/aiguard-gate/">PyPI</a></li>
+        <li><a href="security.html">Security policy</a></li>
+        <li><a href="docs/index.html">Docs</a></li>
+      </ul>
+    </div>
+    <p class="footer-note">Beta software, provided “as is”, without warranty of any
+    kind. AIGuard is a defense-in-depth guardrail, not a security boundary. You are
+    responsible for reviewing every command you approve.</p>
+  </div>
+</footer>
+
+</body>
+</html>
