@@ -38,17 +38,21 @@ python3 -m http.server 8000
 Every page also opens directly from `file://` (all paths are relative,
 the JS degrades gracefully when `navigator.clipboard` is unavailable).
 
-## Deploy to Cloudflare Pages
+## Deploy to Cloudflare (Workers static assets)
 
-The site is deployed by **Cloudflare Pages** via Git integration and served
-at `https://aiguard-gate.dev` (the URL used in the canonical / OG meta tags).
+The site is deployed by **Cloudflare** via Git integration and served at
+`https://aiguard-gate.dev` (the URL used in the canonical / OG meta tags).
+Cloudflare's dashboard deploys it as a Worker whose only job is serving the
+static assets in `site/` — configured by [../wrangler.jsonc](../wrangler.jsonc)
+at the repository root:
 
 - **Production branch:** `main` — every push auto-deploys; pull requests get
   preview deployments.
-- **Build settings:** framework preset *None*, no build command, output
-  directory `site`.
-- **Custom domain:** `aiguard-gate.dev` is attached in the Pages project;
-  DNS is managed automatically because the zone lives on Cloudflare.
+- **Build:** none — the `assets.directory` setting points at `site/`.
+- **404s:** `not_found_handling: "404-page"` serves `site/404.html` with a
+  real 404 status.
+- **Custom domain:** `aiguard-gate.dev` is attached to the Worker; DNS is
+  managed automatically because the zone lives on Cloudflare.
 
 There is no deploy workflow in this repository — Cloudflare builds on push.
 Do not reintroduce a GitHub Pages deploy for `site/`; the canonical public
