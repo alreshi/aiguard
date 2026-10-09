@@ -57,7 +57,7 @@ def main() -> None:
             for token, mtime in current_files.items():
                 if active_challenges.get(token) != mtime:
                     active_challenges[token] = mtime
-                    with open(directory / f"{token}.json", "r") as f:
+                    with open(directory / f"{token}.json") as f:
                         data = json.load(f)
                     command = data.get("command", "Unknown command")
                     if os.uname().sysname == "Darwin":

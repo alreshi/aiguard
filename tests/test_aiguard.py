@@ -135,7 +135,7 @@ class TestUserPolicy:
 
 class TestChallengeResponse:
     def test_single_use_consumption(self, isolate_home):
-        from aiguard.crypto import approved_dir, create_challenge, consume_approval
+        from aiguard.crypto import approved_dir, consume_approval, create_challenge
         token = create_challenge("test command", "high", "test")
         approved_dir().mkdir(parents=True, exist_ok=True)
         (approved_dir() / f"{token}.json").write_text(
@@ -145,7 +145,7 @@ class TestChallengeResponse:
         assert consume_approval(token) is False
 
     def test_expired_approval_not_consumed(self, isolate_home):
-        from aiguard.crypto import approved_dir, hash_command, consume_approval
+        from aiguard.crypto import approved_dir, consume_approval, hash_command
         token = hash_command("cmd")
         approved_dir().mkdir(parents=True, exist_ok=True)
         (approved_dir() / f"{token}.json").write_text(
@@ -154,7 +154,7 @@ class TestChallengeResponse:
         assert consume_approval(token) is False
 
     def test_opportunistic_gc(self, isolate_home):
-        from aiguard.crypto import challenges_dir, approved_dir, prune_expired
+        from aiguard.crypto import approved_dir, challenges_dir, prune_expired
         challenges_dir().mkdir(parents=True, exist_ok=True)
         approved_dir().mkdir(parents=True, exist_ok=True)
         (challenges_dir() / "old.json").write_text('{"created_at": 0}')
@@ -179,17 +179,21 @@ class TestEvaluateHook:
         return json.dumps({"tool_name": "Bash", "tool_input": {"command": command}})
 
     def test_allow_exits_0(self, isolate_home, no_user_policy):
+        import io
+        import sys
+
         from aiguard.evaluate import main
-        import io, sys
         sys.stdin = io.StringIO(self._payload("git status"))
         with pytest.raises(SystemExit) as exc:
             main()
         assert exc.value.code == 0
 
     def test_block_exits_2_no_challenge(self, isolate_home, no_user_policy):
-        from aiguard.evaluate import main
+        import io
+        import sys
+
         from aiguard.crypto import challenges_dir
-        import io, sys
+        from aiguard.evaluate import main
         sys.stdin = io.StringIO(self._payload("rm -rf /"))
         with pytest.raises(SystemExit) as exc:
             main()
@@ -197,9 +201,11 @@ class TestEvaluateHook:
         assert not challenges_dir().exists() or not list(challenges_dir().glob("*.json"))
 
     def test_ask_creates_challenge_and_exits_2(self, isolate_home, no_user_policy, capsys):
-        from aiguard.evaluate import main
+        import io
+        import sys
+
         from aiguard.crypto import challenges_dir, hash_command
-        import io, sys
+        from aiguard.evaluate import main
         sys.stdin = io.StringIO(self._payload("rm -rf build/"))
         with pytest.raises(SystemExit) as exc:
             main()
@@ -209,9 +215,11 @@ class TestEvaluateHook:
         assert f"AIGUARD_CHALLENGE:{token}" in capsys.readouterr().err
 
     def test_retry_consumes_approval_and_allows(self, isolate_home, no_user_policy):
-        from aiguard.evaluate import main
+        import io
+        import sys
+
         from aiguard.crypto import approved_dir, hash_command
-        import io, sys
+        from aiguard.evaluate import main
         token = hash_command("rm -rf build/")
         approved_dir().mkdir(parents=True, exist_ok=True)
         (approved_dir() / f"{token}.json").write_text(
@@ -224,16 +232,20 @@ class TestEvaluateHook:
         assert not (approved_dir() / f"{token}.json").exists()
 
     def test_malformed_input_fails_closed(self, isolate_home):
+        import io
+        import sys
+
         from aiguard.evaluate import main
-        import io, sys
         sys.stdin = io.StringIO("not json at all")
         with pytest.raises(SystemExit) as exc:
             main()
         assert exc.value.code == 2
 
     def test_empty_stdin_fails_closed(self, isolate_home):
+        import io
+        import sys
+
         from aiguard.evaluate import main
-        import io, sys
         sys.stdin = io.StringIO("")
         with pytest.raises(SystemExit) as exc:
             main()
@@ -243,6 +255,7 @@ class TestEvaluateHook:
 class TestAuditLog:
     def test_log_written_with_0600(self, isolate_home):
         import os
+
         from aiguard.audit import audit_path, log_decision
         log_decision("git status", {"action": "allow", "risk": "low", "warning": ""})
         path = audit_path()
@@ -353,6 +366,7 @@ class TestStateStoreHomePrefixes:
 
     def test_expanded_home_write_blocked(self, isolate_home, no_user_policy):
         import importlib
+
         import aiguard.policy as policy
         importlib.reload(policy)  # recompile _HOME_PREFIX against patched home
         res = policy.evaluate_command(f"echo x >> {isolate_home}/.aiguard/approved/x.json")
@@ -380,6 +394,7 @@ class TestStateFilePermissions:
 
     def test_challenge_file_mode(self, no_user_policy):
         import os
+
         from aiguard.crypto import challenges_dir, create_challenge
         token = create_challenge("sudo foo", "high", "test")
         mode = os.stat(challenges_dir() / f"{token}.json").st_mode & 0o777
@@ -387,6 +402,7 @@ class TestStateFilePermissions:
 
     def test_audit_file_and_dir_modes(self, no_user_policy):
         import os
+
         from aiguard.audit import audit_path, log_decision
         log_decision("ls", {"action": "allow", "risk": "low", "warning": ""})
         assert os.stat(audit_path()).st_mode & 0o777 == 0o600

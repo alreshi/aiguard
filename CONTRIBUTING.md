@@ -1,8 +1,7 @@
 # Contributing to AIGuard
 
-> AIGuard is currently a **private Beta**. Contributions are by invitation of
-> the maintainer until the repository is made public. The workflow below
-> applies already and will not change at release.
+> AIGuard is currently a **public Beta** — see the risk statement in
+> [README.md](README.md). The workflow below applies to all contributions.
 
 ## Development setup
 
@@ -74,7 +73,8 @@ without an ADR ([docs/adr/](docs/adr/)) and maintainer sign-off:
 
 - Match the surrounding code: standard library first, explicit error
   handling, no unnecessary dependencies. New runtime dependencies need
-  justification in the PR.
+  justification in the PR and are governed by
+  [docs/dependency-management.md](docs/dependency-management.md).
 - Use the domain vocabulary in [GLOSSARY.md](GLOSSARY.md) (*Decision*,
   *Action*, *Challenge*, *Approval*, …) in code, comments, and docs. Avoid
   the terms the glossary marks as deprecated.

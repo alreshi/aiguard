@@ -1,11 +1,11 @@
 # Release and Versioning Strategy
 
-## Status: private Beta
+## Status: public Beta
 
-The repository is **private** and the current release line is **Beta**. No
-public release, tag announcement, or artifact distribution happens without
-the maintainer's explicit approval. Until then, all builds are evaluation
-builds.
+The repository is **public** and the current release line is **Beta**.
+Releases follow the process below; all supply-chain controls in the release
+workflow (tests, lint, dependency audit, SLSA provenance, SBOM) are
+release-blocking.
 
 ## Versioning
 
@@ -62,13 +62,35 @@ publisher — this is strongly encouraged once others have commit access.
    date.
 3. Bump the version in both locations above.
 4. Commit: `Release vX.Y.Z`.
-5. **While private:** stop here. Do not tag, do not run the release
-   workflow, do not flip repository visibility.
-6. **After explicit release approval:**
-   - Rehearse: Actions → Release → Run workflow → target `testpypi`,
-     then verify `pip install --index-url https://test.pypi.org/simple/ aiguard-gate`.
-   - Tag and push: `git tag -a vX.Y.Z -m "vX.Y.Z" && git push origin vX.Y.Z`.
-     The workflow publishes to PyPI and creates the GitHub Release.
+5. Rehearse: Actions → Release → Run workflow → target `testpypi`,
+   then verify `pip install --index-url https://test.pypi.org/simple/ aiguard-gate`.
+6. Tag and push: `git tag -a vX.Y.Z -m "vX.Y.Z" && git push origin vX.Y.Z`.
+   The workflow publishes to PyPI and creates the GitHub Release with the
+   SBOM attached; provenance attestations are stored on the repository.
+7. Verify the published release (see below) before announcing it.
+
+## Verifying a release
+
+Before announcing a release, verify its supply-chain artifacts:
+
+```bash
+# 1. Download the release assets
+gh release download vX.Y.Z --repo alreshi/aiguard
+
+# 2. Verify SLSA provenance for the wheel and sdist
+gh attestation verify aiguard_gate-X.Y.Z-py3-none-any.whl --repo alreshi/aiguard
+gh attestation verify aiguard_gate-X.Y.Z.tar.gz --repo alreshi/aiguard
+
+# 3. Inspect the SBOM (dependency inventory of this exact release)
+cat sbom.spdx.json | jq '.packages | length'
+
+# 4. Confirm the dependency tree has no known vulnerabilities
+pip install aiguard-gate==X.Y.Z && pip-audit
+```
+
+All four checks must pass. If provenance verification fails, treat the
+artifacts as compromised: yank the PyPI release, delete the GitHub Release,
+and open a Security Advisory.
 
 ## Support policy
 
