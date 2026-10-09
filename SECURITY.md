@@ -56,12 +56,26 @@ access performed without spawning a command.
 ## Reporting a vulnerability
 
 If you find a security issue in AIGuard, please report it **privately** via a
-GitHub Security Advisory on this repository rather than a public issue. While
-the repository is private, contact the maintainer directly.
+GitHub Security Advisory on this repository rather than a public issue.
 
 Please include: the affected version, platform, assistant (Kimi/Claude) and
 its version, steps to reproduce, and whether the issue lets a command bypass
 policy evaluation or approval.
+
+## Response timeline
+
+We commit to the following response SLAs for privately reported
+vulnerabilities:
+
+| Severity | Initial response | Fix target |
+|----------|------------------|------------|
+| Critical (policy bypass, approval bypass) | 3 days | 7 days |
+| High | 7 days | 30 days |
+| Medium | 14 days | 90 days |
+| Low | 14 days | 180 days |
+
+If a fix cannot ship within the fix target, we will publish a mitigation note
+in the advisory and, where warranted, in `docs/risk-disclosures.md`.
 
 ## Supported versions
 

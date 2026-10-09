@@ -64,7 +64,7 @@ def prune_expired() -> None:
             continue
         for file in directory.glob("*.json"):
             try:
-                with open(file, "r") as f:
+                with open(file) as f:
                     data = json.load(f)
                 if ttl is not None:
                     if now - data.get(field, 0) > ttl:
@@ -81,7 +81,7 @@ def consume_approval(token: str) -> bool:
     if not approved_path.exists():
         return False
     try:
-        with open(approved_path, "r") as f:
+        with open(approved_path) as f:
             data = json.load(f)
         if time.time() > data.get("expires_at", 0):
             approved_path.unlink()

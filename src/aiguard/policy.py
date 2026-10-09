@@ -8,7 +8,8 @@ import re
 import sys
 import tomllib
 from pathlib import Path
-from typing import Dict, Any, List, Pattern
+from re import Pattern
+from typing import Any
 
 # Absolute Block: recursive+force delete of token-exact protected targets.
 # Tolerates -rf/-fr/-Rf clusters, separated flags (-r -f), long flags, and
@@ -42,7 +43,7 @@ STATE_STORE_BLOCK_RE = re.compile(
 # (prevents auto-allow of e.g. `cat ~/.aiguard/audit.jsonl`).
 STATE_STORE_ASK_RE = re.compile(_HOME_PREFIX + r"?\.aiguard(?:/|\s|$)")
 
-HIGH_RISK_PATTERNS: List[tuple[Pattern, str]] = [
+HIGH_RISK_PATTERNS: list[tuple[Pattern, str]] = [
     (re.compile(r"\brm\s+.*(?:-[a-zA-Z]*r[a-zA-Z]*f|-[a-zA-Z]*f[a-zA-Z]*r|--recursive|--force)\b"), "Recursive delete command."),
     (re.compile(r"\bcurl\b.*\|\s*(ba)?sh"), "Downloads and executes remote script."),
     (re.compile(r"\bwget\b.*\|\s*(ba)?sh"), "Downloads and executes remote script."),
@@ -61,13 +62,13 @@ METACHARACTERS = re.compile(r"[;|&<>`$()\n]")
 SAFE_PREFIXES = ["ls", "dir", "pwd", "cd", "git status", "git log", "git diff", "cat", "echo"]
 
 
-def load_user_policy() -> Dict[str, List[Pattern]]:
+def load_user_policy() -> dict[str, list[Pattern]]:
     """Load, validate, and precompile ~/.aiguard/policy.toml.
 
     Invalid patterns are skipped with a stderr warning; a malformed file
     falls back to an empty policy. Never raises.
     """
-    default_policy: Dict[str, List[Pattern]] = {"allow": [], "ask": [], "block": []}
+    default_policy: dict[str, list[Pattern]] = {"allow": [], "ask": [], "block": []}
     policy_path = Path.home() / ".aiguard" / "policy.toml"
     if not policy_path.exists():
         return default_policy
@@ -92,7 +93,7 @@ def load_user_policy() -> Dict[str, List[Pattern]]:
     return default_policy
 
 
-def evaluate_command(command: str) -> Dict[str, Any]:
+def evaluate_command(command: str) -> dict[str, Any]:
     user_policy = load_user_policy()
 
     # Priority 0: State store writes (Absolute Block, no challenge)

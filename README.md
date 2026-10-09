@@ -1,5 +1,8 @@
 # 🛡️ AIGuard
 
+[![CI](https://github.com/alreshi/aiguard/actions/workflows/ci.yml/badge.svg)](https://github.com/alreshi/aiguard/actions/workflows/ci.yml)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/alreshi/aiguard/badge)](https://securityscorecards.dev/viewer/?uri=github.com/alreshi/aiguard)
+
 > **⚠️ BETA RELEASE — v6.1.0b1**
 > AIGuard is currently a **Beta release intended for evaluation, testing, and
 > feedback purposes only**. It may contain defects, incomplete features,
@@ -83,6 +86,7 @@ User `allow` rules can never override a built-in Absolute Block.
 | [SECURITY.md](SECURITY.md) | Security policy, considerations, and known limitations |
 | [docs/risk-disclosures.md](docs/risk-disclosures.md) | Risk disclosures and operational warnings |
 | [docs/releases.md](docs/releases.md) | Release and versioning strategy |
+| [docs/dependency-management.md](docs/dependency-management.md) | Dependency review, approval, and update policy |
 | [CHANGELOG.md](CHANGELOG.md) | Release history |
 | [GLOSSARY.md](GLOSSARY.md) | Domain vocabulary used across code and docs |
 | [docs/design/out-of-band-approval.md](docs/design/out-of-band-approval.md) | Original design document |

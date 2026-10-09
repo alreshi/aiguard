@@ -14,7 +14,7 @@ import time
 
 from rich.console import Console
 
-from .crypto import approved_dir, challenges_dir, APPROVAL_TTL_SECONDS
+from .crypto import APPROVAL_TTL_SECONDS, approved_dir, challenges_dir
 
 console = Console()
 
@@ -65,7 +65,7 @@ def approve_command(token: str, force_totp: bool = False) -> None:
         console.print(f"[red]❌ Challenge '{token}' not found or already resolved.[/red]")
         sys.exit(1)
 
-    with open(challenge_path, "r") as f:
+    with open(challenge_path) as f:
         challenge = json.load(f)
 
     console.print("\n[bold cyan]🛡️ AIGuard Approval Request[/bold cyan]")
