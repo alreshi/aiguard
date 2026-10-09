@@ -47,9 +47,9 @@ def create_challenge(command: str, risk: str, warning: str) -> str:
         "created_at": time.time(),
     }
     challenge_path = challenges_dir() / f"{token}.json"
-    with open(challenge_path, "w") as f:
+    fd = os.open(challenge_path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, "w") as f:
         json.dump(challenge, f)
-    os.chmod(challenge_path, 0o600)
     return token
 
 

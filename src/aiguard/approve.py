@@ -81,9 +81,9 @@ def approve_command(token: str, force_totp: bool = False) -> None:
     challenge["expires_at"] = challenge["approved_at"] + APPROVAL_TTL_SECONDS
 
     approved_path = approved_dir() / f"{token}.json"
-    with open(approved_path, "w") as f:
+    fd = os.open(approved_path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, "w") as f:
         json.dump(challenge, f)
-    os.chmod(approved_path, 0o600)
     challenge_path.unlink()
 
     console.print("[bold green]✅ Approved. The AI can now retry this exact command.[/bold green]")

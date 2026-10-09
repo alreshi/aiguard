@@ -313,3 +313,81 @@ class TestTotpLockout:
         totp._record_failure()
         data = json.loads(totp._lockout_path().read_text())
         assert data["attempts"] == 1
+
+
+class TestAbsoluteBlockForms:
+    """Regression: Absolute Block must catch common rm variants (Bugbot)."""
+
+    def test_capital_r_flag(self, no_user_policy):
+        from aiguard.policy import evaluate_command
+        assert evaluate_command("rm -Rf /")["action"] == "block"
+
+    def test_separate_flags(self, no_user_policy):
+        from aiguard.policy import evaluate_command
+        assert evaluate_command("rm -r -f /")["action"] == "block"
+        assert evaluate_command("rm -f -r ~")["action"] == "block"
+
+    def test_trailing_slash_targets(self, no_user_policy):
+        from aiguard.policy import evaluate_command
+        assert evaluate_command("rm -rf ~/")["action"] == "block"
+        assert evaluate_command("rm -rf $HOME/")["action"] == "block"
+
+    def test_unprotected_subdir_still_ask(self, no_user_policy):
+        from aiguard.policy import evaluate_command
+        assert evaluate_command("rm -rf ~/projects/old")["action"] == "ask"
+        assert evaluate_command("rm -rf /var/tmp/x")["action"] == "ask"
+
+
+class TestStateStoreHomePrefixes:
+    """Regression: state-store protection covers ${HOME} and expanded paths."""
+
+    def test_brace_home_write_blocked(self, no_user_policy):
+        from aiguard.policy import evaluate_command
+        res = evaluate_command("echo x > ${HOME}/.aiguard/policy.toml")
+        assert res["action"] == "block"
+
+    def test_brace_home_read_is_ask(self, no_user_policy):
+        from aiguard.policy import evaluate_command
+        res = evaluate_command("cat ${HOME}/.aiguard/audit.jsonl")
+        assert res["action"] == "ask"
+
+    def test_expanded_home_write_blocked(self, isolate_home, no_user_policy):
+        import importlib
+        import aiguard.policy as policy
+        importlib.reload(policy)  # recompile _HOME_PREFIX against patched home
+        res = policy.evaluate_command(f"echo x >> {isolate_home}/.aiguard/approved/x.json")
+        assert res["action"] == "block"
+
+
+class TestSafePrefixWordBoundary:
+    """Regression: safe prefixes must not auto-allow different commands."""
+
+    def test_lookalike_commands_are_ask(self, no_user_policy):
+        from aiguard.policy import evaluate_command
+        assert evaluate_command("lsof -i :8080")["action"] == "ask"
+        assert evaluate_command("direnv allow")["action"] == "ask"
+
+    def test_safe_commands_still_allow(self, no_user_policy):
+        from aiguard.policy import evaluate_command
+        assert evaluate_command("ls")["action"] == "allow"
+        assert evaluate_command("ls -la /tmp")["action"] == "allow"
+        assert evaluate_command("pwd")["action"] == "allow"
+        assert evaluate_command("cat README.md")["action"] == "allow"
+
+
+class TestStateFilePermissions:
+    """Regression: state files are 0600 from creation, dir 0700 (Bugbot)."""
+
+    def test_challenge_file_mode(self, no_user_policy):
+        import os
+        from aiguard.crypto import challenges_dir, create_challenge
+        token = create_challenge("sudo foo", "high", "test")
+        mode = os.stat(challenges_dir() / f"{token}.json").st_mode & 0o777
+        assert mode == 0o600
+
+    def test_audit_file_and_dir_modes(self, no_user_policy):
+        import os
+        from aiguard.audit import audit_path, log_decision
+        log_decision("ls", {"action": "allow", "risk": "low", "warning": ""})
+        assert os.stat(audit_path()).st_mode & 0o777 == 0o600
+        assert os.stat(audit_path().parent).st_mode & 0o777 == 0o700

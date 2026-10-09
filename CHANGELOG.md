@@ -15,6 +15,27 @@ identifiers (see [docs/releases.md](docs/releases.md)).
 - Positioned the project as an Execution-Layer Security (ELS) tool for AI
   agents across README, SECURITY, architecture docs, and the glossary.
 
+### Security
+
+Found by a Cursor Bugbot full-codebase review; all fixed with regression
+tests:
+
+- Absolute Block now catches `rm -Rf`, `rm -r -f` (separated flags), and
+  trailing-slash protected targets (`rm -rf ~/`, `rm -rf $HOME/`).
+- State-store protection now recognizes `${HOME}/` and the expanded absolute
+  home path, not just `~/` and `$HOME/`.
+- Safe-prefix auto-allow now requires a word boundary — lookalike commands
+  like `lsof` and `direnv` no longer inherit the `ls`/`dir` auto-allow.
+- State files (challenges, approvals, audit log, TOTP fallback/lockout) are
+  created 0600 atomically instead of written-then-chmod'ed, and `~/.aiguard/`
+  is created 0700, closing the umask window.
+- Removed accidentally committed browser-automation artifacts
+  (`.playwright-mcp/`) from tracking; now gitignored.
+
+Two Bugbot findings were verified false positives against the official Kimi
+Code docs: the hook config path `~/.kimi-code/config.toml` and the
+`PreToolUse` matcher `"Bash"` are both correct as implemented.
+
 ## [6.1.0b1] - 2026-10-08
 
 First **Beta** pre-release. Intended for evaluation, testing, and feedback
