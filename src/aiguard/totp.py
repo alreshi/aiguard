@@ -57,9 +57,10 @@ def _save_secret(secret: str) -> None:
     except Exception:
         pass
     path = _fallback_path()
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(secret)
-    os.chmod(path, 0o600)
+    path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, "w") as f:
+        f.write(secret)
     console.print(
         "[yellow]⚠️ No usable system keyring. Secret stored in "
         "~/.aiguard/totp-secret (0600).[/yellow]"
@@ -118,8 +119,9 @@ def _record_failure() -> None:
     else:
         data = {"attempts": attempts, "locked_until": 0}
 
-    path.write_text(json.dumps(data))
-    os.chmod(path, 0o600)
+    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, "w") as f:
+        f.write(json.dumps(data))
 
 
 def verify_totp_interactive() -> bool:
