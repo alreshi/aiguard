@@ -38,50 +38,21 @@ python3 -m http.server 8000
 Every page also opens directly from `file://` (all paths are relative,
 the JS degrades gracefully when `navigator.clipboard` is unavailable).
 
-## Deploy to GitHub Pages
+## Deploy to Cloudflare Pages
 
-GitHub Pages' "deploy from branch" option only serves `/` or `/docs`, so
-publishing this `site/` folder needs a tiny Actions workflow (no secrets —
-`GITHUB_TOKEN` only). The workflow lives at
-[../.github/workflows/site.yml](../.github/workflows/site.yml):
+The site is deployed by **Cloudflare Pages** via Git integration and served
+at `https://aiguard-gate.dev` (the URL used in the canonical / OG meta tags).
 
-```yaml
-name: Deploy site
+- **Production branch:** `main` — every push auto-deploys; pull requests get
+  preview deployments.
+- **Build settings:** framework preset *None*, no build command, output
+  directory `site`.
+- **Custom domain:** `aiguard-gate.dev` is attached in the Pages project;
+  DNS is managed automatically because the zone lives on Cloudflare.
 
-on:
-  push:
-    branches: [main]
-    paths: ['site/**']
-  workflow_dispatch:
-
-permissions:
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: true
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: site
-      - id: deployment
-        uses: actions/deploy-pages@v4
-```
-
-Then: repo **Settings → Pages → Source: GitHub Actions**. The site lands at
-`https://alreshi.github.io/aiguard/` (the URL already used in the canonical /
-OG meta tags). Note: the deploy job fails until Pages is enabled — enable it
-before pushing, or re-run the failed workflow afterwards.
+There is no deploy workflow in this repository — Cloudflare builds on push.
+Do not reintroduce a GitHub Pages deploy for `site/`; the canonical public
+URL is the custom domain only.
 
 ## Editing conventions
 
