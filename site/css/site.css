@@ -596,3 +596,13 @@ tr:last-child td { border-bottom: 0; }
   .site-nav { gap: var(--sp-3); }
   .terminal-body { font-size: 12px; min-height: 320px; }
 }
+
+/* Utilities — keep these instead of inline style= attributes so the site's
+   Content-Security-Policy can forbid inline styles entirely. */
+.u-text-center { text-align: center; }
+.u-pt-24 { padding-top: 96px; }
+.u-mx-auto { margin-inline: auto; }
+.u-jc-center { justify-content: center; }
+.u-mt-4 { margin-top: var(--sp-4); }
+.u-wrap-narrow { max-width: 860px; }
+.u-text-lg { font-size: var(--text-lg); }
