@@ -57,7 +57,7 @@ jobs:
         with:
           python-version: "3.11"
       - run: |
-          python -m pip install --upgrade pip
+          python -m pip install --upgrade pip setuptools
           pip install -e '.[dev]'
       # Fails the build on any known vulnerability in the installed dependency tree.
       - run: pip-audit
