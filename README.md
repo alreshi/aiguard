@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/alreshi/aiguard/actions/workflows/ci.yml/badge.svg)](https://github.com/alreshi/aiguard/actions/workflows/ci.yml)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/alreshi/aiguard/badge)](https://securityscorecards.dev/viewer/?uri=github.com/alreshi/aiguard)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/15352/badge)](https://www.bestpractices.dev/projects/15352)
 
 > **⚠️ BETA RELEASE — v6.1.0b1**
 > AIGuard is currently a **Beta release intended for evaluation, testing, and
