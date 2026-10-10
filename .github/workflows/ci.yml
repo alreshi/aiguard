@@ -41,11 +41,11 @@ jobs:
           pip install -e '.[dev]'
       - run: pytest -q --cov --cov-report=xml --cov-report=term
       - name: Upload coverage
-        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
         uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage.xml
+          flags: ${{ matrix.os == 'ubuntu-latest' && 'ubuntu' || 'macos' }}
           fail_ci_if_error: false
 
   security-audit:
